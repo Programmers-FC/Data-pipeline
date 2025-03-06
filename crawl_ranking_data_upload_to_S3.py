@@ -183,7 +183,8 @@ def upload_to_s3():
         raise FileNotFoundError(f"❌ 파일이 존재하지 않음: {file_path}")
 
     s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
-    s3_key = f"{S3_FOLDER_PATH}/" + os.path.basename(file_path)
+    date_folder = datetime.now().strftime('%Y-%m-%d')
+    s3_key = f"{S3_FOLDER_PATH}/{date_folder}" + os.path.basename(file_path)
 
     s3_hook.load_file(
         filename=file_path,
