@@ -38,7 +38,7 @@ CREATE TABLE analytics.ranking_info (
     total_lose     INT,                     -- 패배수
     formation      VARCHAR(50),             -- 포메이션
     match_id       VARCHAR(50),             -- 매치 고유 번호
-    created_at     TIMESTAMP,               -- 랭킹 조회 시간
+    created_at     Date,                    -- 랭킹 조회 시간
     ranking        INT,                     -- 순위
     CONSTRAINT ranking_info_pk PRIMARY KEY (gamer_nickname),
     CONSTRAINT ranking_info_fk_division_id FOREIGN KEY (division_id)
@@ -65,26 +65,21 @@ CREATE TABLE analytics.match_info (
 
 -- 6. team_color_info 팀컬러 정보 테이블
 CREATE TABLE analytics.team_color_info (
-    gamer_nickname  VARCHAR(100) PRIMARY KEY,  -- 감독명 (PK)
-    team_color_json VARCHAR(200),            -- JSON 형식의 팀 컬러 정보
-    created_at      TIMESTAMP,               -- 데이터 입력 시간
-    updated_at      TIMESTAMP,               -- 정보 변경 시간
+	id              INT IDENTITY(1,1),      --인덱스
+    gamer_nickname  VARCHAR(100),           -- 감독명
+    team_color      VARCHAR(200),           -- 팀 컬러
+    created_at      Date,                   -- 데이터 입력 시간
+    CONSTRAINT team_color_info_pk PRIMARY KEY (id),
     CONSTRAINT team_color_info_fk_gamer_nickname FOREIGN KEY (gamer_nickname)
-    REFERENCES analytics.ranking_info (gamer_nickname)
+        REFERENCES analytics.ranking_info (gamer_nickname)
 );
--- [
---   {"team": "TOTY", "member_count": 8},
---   {"team": "롬바르디아 FC", "member_count": 2}
-
--- 겹치는 경우에 대해서 member_count 컬럼을 따로 넣지 않고, JSON 객체 형태로 저장해도 될까요??
-
 
 -- 7. player_review_info 선수 감정분석 결과 테이블
 CREATE TABLE analytics.player_review_info (
-    spid            INT,           -- 선수 고유 식별자 (FK: player_image_info.spid)
-    gamer_nickname  VARCHAR(100) NOT NULL,  -- 감독명
-    review          VARCHAR(100),  -- 선수 감정분석 결과
-    CONSTRAINT player_review_info_pk PRIMARY KEY (spid, gamer_nickname),
+    spid            INT,                    -- 선수 고유 식별자
+    review          VARCHAR(200) NOT NULL,  -- 리뷰
+    prediction      VARCHAR(100),           -- 선수 감정분석 결과
+    CONSTRAINT player_review_info_pk PRIMARY KEY (spid, review),
     CONSTRAINT player_review_info_fk_spid FOREIGN KEY (spid)
         REFERENCES analytics.player_image_info (spid)
 );
