@@ -1,0 +1,13 @@
+# 로그 파일 및 캐시 파일
+logs/
+*.log
+
+# 환경 변수 및 보안 파일
+.env
+plugins/programmers-fc-key.pem
+
+# OS, IDE 생성 파일
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
