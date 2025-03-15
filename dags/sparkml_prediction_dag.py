@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.providers.ssh.operators.ssh import SSHOperator
-from datetime import datetime,timedelta
+from datetime import datetime
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
@@ -16,20 +16,20 @@ default_args = {
 dag = DAG(
     dag_id="sparkml_prediction",
     default_args=default_args,
-    schedule_interval="0 6 * * *",
+    schedule_interval="0 12 * * *",
     tags=['s3', 'sparkml', 'spark'],
     catchup=False,
     max_active_runs = 1
 )
 
-task1 = DummyOperator(task_id="task1")
+task1 = DummyOperator(task_id="task2")
 
 SPARK_SERVER = "ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com"
 SPARK_SCRIPT_PATH = "/home/ubuntu/spark_scripts/sparkml_result.py"
 
 ssh_spark_submit = SSHOperator(
     task_id="submit_spark_via_ssh",
-    ssh_conn_id="spark_ssh_conn", #airflow에서 정의해야할 conn_id#일단 상원님이랑 똑같이 맞췄습니다
+    ssh_conn_id="spark_ssh_conn",# airflow에서 정의해야할 conn_id#일단 상원님이랑 똑같이 맞췄습니다
     command="""
     set -e  # 명령어 실패 시 즉시 종료
     echo "Starting Spark Job on {{ data_interval_end | ds }}"
@@ -65,10 +65,8 @@ ssh_spark_submit = SSHOperator(
 )
 
 
-trigger_review_info_redshift_dag = TriggerDagRunOperator(
-    task_id="trigger_review_info_redshift_task",
-    trigger_dag_id="daily_review_data_update",
-    wait_for_completion=False
-)
 
-task1 >> ssh_spark_submit >> trigger_review_info_redshift_dag
+task2 = DummyOperator(task_id="task2")
+
+
+task1 >> ssh_spark_submit >> task2
