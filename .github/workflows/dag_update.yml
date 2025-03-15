@@ -1,0 +1,24 @@
+name: Update Airflow DAGs
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'dags/**' # DAG안 파일 수정 시 실행
+
+jobs:
+  update_dags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: DAG 수정시 SSH로 Airflow EC2에 접속하여 DAG 최신화
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AIRFLOW_EC2_HOST }}
+          username: ${{ secrets.AIRFLOW_EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/airflow-setup/local-executor-airflow # Airflow project path
+            git pull origin $(git rev-parse --abbrev-ref HEAD) # 현재 브랜치에서 최신 코드 가져오기
