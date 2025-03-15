@@ -1,0 +1,32 @@
+[2025-03-13T07:01:56.581+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-13T07:01:56.617+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: collect_match_info_dag.trigger_spark_match_info_task scheduled__2025-03-12T01:40:00+00:00 [queued]>
+[2025-03-13T07:01:56.627+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: collect_match_info_dag.trigger_spark_match_info_task scheduled__2025-03-12T01:40:00+00:00 [queued]>
+[2025-03-13T07:01:56.627+0000] {taskinstance.py:2306} INFO - Starting attempt 3 of 3
+[2025-03-13T07:01:56.642+0000] {taskinstance.py:2330} INFO - Executing <Task(TriggerDagRunOperator): trigger_spark_match_info_task> on 2025-03-12 01:40:00+00:00
+[2025-03-13T07:01:56.648+0000] {standard_task_runner.py:63} INFO - Started process 25722 to run task
+[2025-03-13T07:01:56.651+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'collect_match_info_dag', 'trigger_spark_match_info_task', 'scheduled__2025-03-12T01:40:00+00:00', '--job-id', '125', '--raw', '--subdir', 'DAGS_FOLDER/collect_match_info_dag.py', '--cfg-path', '/tmp/tmp8373wxnz']
+[2025-03-13T07:01:56.654+0000] {standard_task_runner.py:91} INFO - Job 125: Subtask trigger_spark_match_info_task
+[2025-03-13T07:01:56.719+0000] {task_command.py:426} INFO - Running <TaskInstance: collect_match_info_dag.trigger_spark_match_info_task scheduled__2025-03-12T01:40:00+00:00 [running]> on host a0d797a25898
+[2025-03-13T07:01:56.828+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='collect_match_info_dag' AIRFLOW_CTX_TASK_ID='trigger_spark_match_info_task' AIRFLOW_CTX_EXECUTION_DATE='2025-03-12T01:40:00+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-12T01:40:00+00:00'
+[2025-03-13T07:01:56.829+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-13T07:01:57.132+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-13T07:01:57.159+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/operators/trigger_dagrun.py", line 177, in execute
+    dag_run = trigger_dag(
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/api/common/trigger_dag.py", line 126, in trigger_dag
+    triggers = _trigger_dag(
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/api/common/trigger_dag.py", line 56, in _trigger_dag
+    raise DagNotFound(f"Dag id {dag_id} not found")
+airflow.exceptions.DagNotFound: Dag id submit_spark_job_v3 not found
+[2025-03-13T07:01:57.165+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=collect_match_info_dag, task_id=trigger_spark_match_info_task, run_id=scheduled__2025-03-12T01:40:00+00:00, execution_date=20250312T014000, start_date=20250313T070156, end_date=20250313T070157
+[2025-03-13T07:01:57.193+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 125 for task trigger_spark_match_info_task (Dag id submit_spark_job_v3 not found; 25722)
+[2025-03-13T07:01:57.238+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-13T07:01:57.296+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-13T07:01:57.302+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

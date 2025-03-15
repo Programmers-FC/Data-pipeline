@@ -1,0 +1,54 @@
+[2025-03-14T07:15:10.615+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-14T07:15:10.643+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: daily_ranking_info_update.load_data_to_redshift scheduled__2025-03-13T03:35:00+00:00 [queued]>
+[2025-03-14T07:15:10.656+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: daily_ranking_info_update.load_data_to_redshift scheduled__2025-03-13T03:35:00+00:00 [queued]>
+[2025-03-14T07:15:10.657+0000] {taskinstance.py:2306} INFO - Starting attempt 4 of 5
+[2025-03-14T07:15:10.672+0000] {taskinstance.py:2330} INFO - Executing <Task(S3ToRedshiftOperator): load_data_to_redshift> on 2025-03-13 03:35:00+00:00
+[2025-03-14T07:15:10.680+0000] {standard_task_runner.py:63} INFO - Started process 26791 to run task
+[2025-03-14T07:15:10.685+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'daily_ranking_info_update', 'load_data_to_redshift', 'scheduled__2025-03-13T03:35:00+00:00', '--job-id', '187', '--raw', '--subdir', 'DAGS_FOLDER/ranking_info_to_redshift.py', '--cfg-path', '/tmp/tmpx37krr32']
+[2025-03-14T07:15:10.687+0000] {standard_task_runner.py:91} INFO - Job 187: Subtask load_data_to_redshift
+[2025-03-14T07:15:10.768+0000] {task_command.py:426} INFO - Running <TaskInstance: daily_ranking_info_update.load_data_to_redshift scheduled__2025-03-13T03:35:00+00:00 [running]> on host a0d797a25898
+[2025-03-14T07:15:10.914+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='daily_ranking_info_update' AIRFLOW_CTX_TASK_ID='load_data_to_redshift' AIRFLOW_CTX_EXECUTION_DATE='2025-03-13T03:35:00+00:00' AIRFLOW_CTX_TRY_NUMBER='4' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-13T03:35:00+00:00'
+[2025-03-14T07:15:10.915+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-14T07:15:10.966+0000] {base.py:84} INFO - Using connection ID 's3_conn_team' for task execution.
+[2025-03-14T07:15:11.009+0000] {base.py:84} INFO - Using connection ID 's3_conn_team' for task execution.
+[2025-03-14T07:15:11.010+0000] {connection_wrapper.py:384} INFO - AWS Connection (conn_id='s3_conn_team', conn_type='aws') credentials retrieved from login and password.
+[2025-03-14T07:15:11.024+0000] {s3_to_redshift.py:193} INFO - Executing COPY command...
+[2025-03-14T07:15:11.038+0000] {base.py:84} INFO - Using connection ID 'redshift_conn_team' for task execution.
+[2025-03-14T07:15:11.604+0000] {sql.py:470} INFO - Running statement: 
+                    COPY analytics.ranking_info 
+                    FROM 's3://de5-finalproj-team2/analytics/ranking_info/2025-03-14/'
+                    credentials
+                    'aws_access_key_id=AKIA4RRVVY55RK5T7HCV;aws_secret_access_key=***'
+                    
+                    IAM_ROLE 'arn:aws:iam::862327261051:role/service-role/AmazonRedshift-CommandsAccessRole-20250304T154350'
+			FORMAT AS PARQUET;
+        , parameters: None
+[2025-03-14T07:15:11.621+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-14T07:15:11.622+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/amazon/aws/transfers/s3_to_redshift.py", line 197, in execute
+    redshift_hook.run(sql, autocommit=self.autocommit)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/common/sql/hooks/sql.py", line 418, in run
+    self._run_command(cur, sql_statement, parameters)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/common/sql/hooks/sql.py", line 475, in _run_command
+    cur.execute(sql_statement)
+  File "/home/airflow/.local/lib/python3.9/site-packages/redshift_connector/cursor.py", line 248, in execute
+    raise e
+  File "/home/airflow/.local/lib/python3.9/site-packages/redshift_connector/cursor.py", line 241, in execute
+    self._c.execute(self, operation, args)
+  File "/home/airflow/.local/lib/python3.9/site-packages/redshift_connector/core.py", line 1987, in execute
+    self.handle_messages(cursor)
+  File "/home/airflow/.local/lib/python3.9/site-packages/redshift_connector/core.py", line 2194, in handle_messages
+    raise self.error
+redshift_connector.error.ProgrammingError: {'S': 'ERROR', 'C': '42601', 'M': 'conflicting or redundant options', 'F': '/opt/brazil-pkg-cache/packages/RedshiftPADB/RedshiftPADB-1.0.8470.0/AL2_x86_64/generic-flavor/src/src/pg/src/backend/commands/commands_copy.c', 'L': '471', 'R': 'FailIfConflictCredentialsExists'}
+[2025-03-14T07:15:11.648+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=daily_ranking_info_update, task_id=load_data_to_redshift, run_id=scheduled__2025-03-13T03:35:00+00:00, execution_date=20250313T033500, start_date=20250314T071510, end_date=20250314T071511
+[2025-03-14T07:15:11.676+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 187 for task load_data_to_redshift ({'S': 'ERROR', 'C': '42601', 'M': 'conflicting or redundant options', 'F': '/opt/brazil-pkg-cache/packages/RedshiftPADB/RedshiftPADB-1.0.8470.0/AL2_x86_64/generic-flavor/src/src/pg/src/backend/commands/commands_copy.c', 'L': '471', 'R': 'FailIfConflictCredentialsExists'}; 26791)
+[2025-03-14T07:15:11.708+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-14T07:15:11.741+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-14T07:15:11.743+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

@@ -1,0 +1,125 @@
+[2025-03-08T08:02:26.700+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-08T08:02:26.722+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [queued]>
+[2025-03-08T08:02:26.732+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [queued]>
+[2025-03-08T08:02:26.732+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-03-08T08:02:26.748+0000] {taskinstance.py:2330} INFO - Executing <Task(SSHOperator): submit_spark_via_ssh> on 2025-03-07 00:00:00+00:00
+[2025-03-08T08:02:26.755+0000] {standard_task_runner.py:63} INFO - Started process 10897 to run task
+[2025-03-08T08:02:26.761+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'submit_spark_job_v2', 'submit_spark_via_ssh', 'scheduled__2025-03-07T00:00:00+00:00', '--job-id', '32', '--raw', '--subdir', 'DAGS_FOLDER/match_info_spark_process_v2.py', '--cfg-path', '/tmp/tmpl_wd9ss6']
+[2025-03-08T08:02:26.764+0000] {standard_task_runner.py:91} INFO - Job 32: Subtask submit_spark_via_ssh
+[2025-03-08T08:02:26.838+0000] {task_command.py:426} INFO - Running <TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [running]> on host be828dc9717c
+[2025-03-08T08:02:26.912+0000] {abstractoperator.py:725} ERROR - Exception rendering Jinja template for task 'submit_spark_via_ssh', field 'command'. Template: '\n    set -e  # 명령어 실패 시 즉시 종료\n    echo "Starting Spark Job on {{ params.spark_server }}"\n\n    ssh -i {{ params.pem_file }} ubuntu@{{ params.spark_server }} << \'EOF\'\n    echo "Submitting Spark Job..."\n    spark-submit {{ params.spark_script }} --processing_date {{ data_interval_end | ds }} > spark_job.log 2>&1\n    exit_code=$?\n\n    # 실행 로그 출력 (Airflow에서 확인 가능)\n    cat spark_job.log\n\n    # Spark 실패 감지\n    if [ $exit_code -ne 0 ]; then\n        echo "Spark Job Failed! Check logs."\n        exit 1\n    else\n        echo "Spark Job Succeeded!"\n    fi\n    EOF\n    '
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/abstractoperator.py", line 717, in _do_render_template_fields
+    rendered_content = self.render_template(
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/template/templater.py", line 169, in render_template
+    return self._render(template, context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/abstractoperator.py", line 675, in _render
+    return super()._render(template, context, dag=dag)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/template/templater.py", line 126, in _render
+    return render_template_to_string(template, context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/utils/helpers.py", line 289, in render_template_to_string
+    return render_template(template, cast(MutableMapping[str, Any], context), native=False)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/utils/helpers.py", line 284, in render_template
+    return "".join(nodes)
+  File "<template>", line 22, in root
+  File "/home/airflow/.local/lib/python3.9/site-packages/jinja2/runtime.py", line 852, in _fail_with_undefined_error
+    raise self._undefined_exception(self._undefined_message)
+jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'pem_file'
+[2025-03-08T08:02:26.913+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 2479, in _run_raw_task
+    self._execute_task_with_callbacks(context, test_mode, session=session)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 2633, in _execute_task_with_callbacks
+    task_orig = self.render_templates(context=context, jinja_env=jinja_env)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 3094, in render_templates
+    original_task.render_template_fields(context, jinja_env)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 1336, in render_template_fields
+    self._do_render_template_fields(self, self.template_fields, context, jinja_env, set())
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/abstractoperator.py", line 717, in _do_render_template_fields
+    rendered_content = self.render_template(
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/template/templater.py", line 169, in render_template
+    return self._render(template, context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/abstractoperator.py", line 675, in _render
+    return super()._render(template, context, dag=dag)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/template/templater.py", line 126, in _render
+    return render_template_to_string(template, context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/utils/helpers.py", line 289, in render_template_to_string
+    return render_template(template, cast(MutableMapping[str, Any], context), native=False)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/utils/helpers.py", line 284, in render_template
+    return "".join(nodes)
+  File "<template>", line 22, in root
+  File "/home/airflow/.local/lib/python3.9/site-packages/jinja2/runtime.py", line 852, in _fail_with_undefined_error
+    raise self._undefined_exception(self._undefined_message)
+jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'pem_file'
+[2025-03-08T08:02:26.928+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=submit_spark_job_v2, task_id=submit_spark_via_ssh, run_id=scheduled__2025-03-07T00:00:00+00:00, execution_date=20250307T000000, start_date=20250308T080226, end_date=20250308T080226
+[2025-03-08T08:02:26.941+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 32 for task submit_spark_via_ssh ('dict object' has no attribute 'pem_file'; 10897)
+[2025-03-08T08:02:26.976+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-08T08:02:27.011+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-08T08:02:27.013+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
+[2025-03-08T09:21:02.178+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-08T09:21:02.240+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [queued]>
+[2025-03-08T09:21:02.253+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [queued]>
+[2025-03-08T09:21:02.254+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-03-08T09:21:02.274+0000] {taskinstance.py:2330} INFO - Executing <Task(SSHOperator): submit_spark_via_ssh> on 2025-03-07 00:00:00+00:00
+[2025-03-08T09:21:02.285+0000] {standard_task_runner.py:63} INFO - Started process 405 to run task
+[2025-03-08T09:21:02.293+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'submit_spark_job_v2', 'submit_spark_via_ssh', 'scheduled__2025-03-07T00:00:00+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/match_info_spark_process_v2.py', '--cfg-path', '/tmp/tmpqwhgpten']
+[2025-03-08T09:21:02.296+0000] {standard_task_runner.py:91} INFO - Job 2: Subtask submit_spark_via_ssh
+[2025-03-08T09:21:02.398+0000] {task_command.py:426} INFO - Running <TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [running]> on host 40942f81e2c9
+[2025-03-08T09:21:02.590+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='submit_spark_job_v2' AIRFLOW_CTX_TASK_ID='submit_spark_via_ssh' AIRFLOW_CTX_EXECUTION_DATE='2025-03-07T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-07T00:00:00+00:00'
+[2025-03-08T09:21:02.591+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-08T09:21:02.649+0000] {ssh.py:151} INFO - Creating ssh_client
+[2025-03-08T09:21:02.650+0000] {ssh.py:124} INFO - ssh_hook is not provided or invalid. Trying ssh_conn_id to create SSHHook.
+[2025-03-08T09:21:02.664+0000] {base.py:84} INFO - Using connection ID 'spark_ssh_conn' for task execution.
+[2025-03-08T09:21:02.665+0000] {ssh.py:301} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2025-03-08T09:21:02.672+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-08T09:21:02.687+0000] {ssh.py:343} INFO - Failed to connect. Sleeping before retry attempt 1
+[2025-03-08T09:21:06.446+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-08T09:21:06.495+0000] {ssh.py:343} INFO - Failed to connect. Sleeping before retry attempt 2
+[2025-03-08T09:21:11.418+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-08T09:21:11.467+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-08T09:21:11.468+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 190, in execute
+    with self.get_ssh_client() as ssh_client:
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 152, in get_ssh_client
+    return self.hook.get_conn()
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/hooks/ssh.py", line 347, in get_conn
+    for attempt in Retrying(
+  File "/home/airflow/.local/lib/python3.9/site-packages/tenacity/__init__.py", line 347, in __iter__
+    do = self.iter(retry_state=retry_state)
+  File "/home/airflow/.local/lib/python3.9/site-packages/tenacity/__init__.py", line 325, in iter
+    raise retry_exc.reraise()
+  File "/home/airflow/.local/lib/python3.9/site-packages/tenacity/__init__.py", line 158, in reraise
+    raise self.last_attempt.result()
+  File "/usr/local/lib/python3.9/concurrent/futures/_base.py", line 439, in result
+    return self.__get_result()
+  File "/usr/local/lib/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/hooks/ssh.py", line 354, in get_conn
+    client.connect(**connect_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/client.py", line 485, in connect
+    self._auth(
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/client.py", line 730, in _auth
+    key = self._key_from_filepath(
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/client.py", line 638, in _key_from_filepath
+    key = klass.from_private_key_file(key_path, password)
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/pkey.py", line 421, in from_private_key_file
+    key = cls(filename=filename, password=password)
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/rsakey.py", line 64, in __init__
+    self._from_private_key_file(filename, password)
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/rsakey.py", line 196, in _from_private_key_file
+    data = self._read_private_key_file("RSA", filename, password)
+  File "/home/airflow/.local/lib/python3.9/site-packages/paramiko/pkey.py", line 494, in _read_private_key_file
+    with open(filename, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ubuntu/airflow-setup/spark_connection/programmers-fc-key.pem'
+[2025-03-08T09:21:11.488+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=submit_spark_job_v2, task_id=submit_spark_via_ssh, run_id=scheduled__2025-03-07T00:00:00+00:00, execution_date=20250307T000000, start_date=20250308T092102, end_date=20250308T092111
+[2025-03-08T09:21:11.503+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 2 for task submit_spark_via_ssh ([Errno 2] No such file or directory: '/home/ubuntu/airflow-setup/spark_connection/programmers-fc-key.pem'; 405)
+[2025-03-08T09:21:11.532+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-08T09:21:11.553+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-08T09:21:11.555+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

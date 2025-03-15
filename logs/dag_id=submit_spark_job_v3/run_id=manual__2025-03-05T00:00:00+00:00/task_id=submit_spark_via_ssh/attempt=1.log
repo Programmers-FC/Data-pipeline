@@ -1,0 +1,875 @@
+[2025-03-09T06:15:37.565+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-09T06:15:37.594+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: submit_spark_job_v3.submit_spark_via_ssh manual__2025-03-05T00:00:00+00:00 [queued]>
+[2025-03-09T06:15:37.605+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: submit_spark_job_v3.submit_spark_via_ssh manual__2025-03-05T00:00:00+00:00 [queued]>
+[2025-03-09T06:15:37.605+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-03-09T06:15:37.618+0000] {taskinstance.py:2330} INFO - Executing <Task(SSHOperator): submit_spark_via_ssh> on 2025-03-05 00:00:00+00:00
+[2025-03-09T06:15:37.624+0000] {standard_task_runner.py:63} INFO - Started process 8964 to run task
+[2025-03-09T06:15:37.628+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'submit_spark_job_v3', 'submit_spark_via_ssh', 'manual__2025-03-05T00:00:00+00:00', '--job-id', '39', '--raw', '--subdir', 'DAGS_FOLDER/match_info_spark_process_v3.py', '--cfg-path', '/tmp/tmp46hxlfq0']
+[2025-03-09T06:15:37.630+0000] {standard_task_runner.py:91} INFO - Job 39: Subtask submit_spark_via_ssh
+[2025-03-09T06:15:37.699+0000] {task_command.py:426} INFO - Running <TaskInstance: submit_spark_job_v3.submit_spark_via_ssh manual__2025-03-05T00:00:00+00:00 [running]> on host 40942f81e2c9
+[2025-03-09T06:15:37.820+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='submit_spark_job_v3' AIRFLOW_CTX_TASK_ID='submit_spark_via_ssh' AIRFLOW_CTX_EXECUTION_DATE='2025-03-05T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-03-05T00:00:00+00:00'
+[2025-03-09T06:15:37.821+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-09T06:15:37.844+0000] {ssh.py:151} INFO - Creating ssh_client
+[2025-03-09T06:15:37.844+0000] {ssh.py:124} INFO - ssh_hook is not provided or invalid. Trying ssh_conn_id to create SSHHook.
+[2025-03-09T06:15:37.860+0000] {base.py:84} INFO - Using connection ID 'spark_ssh_conn' for task execution.
+[2025-03-09T06:15:37.861+0000] {ssh.py:301} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2025-03-09T06:15:37.865+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-09T06:15:37.937+0000] {transport.py:1909} INFO - Authentication (publickey) successful!
+[2025-03-09T06:15:37.938+0000] {ssh.py:480} INFO - Running command: 
+    set -e  # 명령어 실패 시 즉시 종료
+    echo "Starting Spark Job on ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com"
+
+    echo "Submitting Spark Job... for 2025-03-04 data"
+   /spark-3.5.3/bin/spark-submit /home/ubuntu/spark_scripts/match_info_pyspark.py 2025-03-04 > spark_job.log 2>&1
+    exit_code=$?
+
+    # 실행 로그 출력 (Airflow에서 확인 가능)
+    if [ -f spark_job.log ]; then
+        echo "=== Spark Job Log Start ==="
+        cat spark_job.log
+        echo "=== Spark Job Log End ==="
+    else
+        echo "Warning: spark_job.log not found!"
+    fi
+
+    # Spark 실패 감지
+    if [ $exit_code -ne 0 ]; then
+        echo "Spark Job Failed! Check logs."
+        exit 1
+    else
+        echo "Spark Job Succeeded!"
+    fi
+    
+[2025-03-09T06:15:38.061+0000] {ssh.py:526} INFO - Starting Spark Job on ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com
+[2025-03-09T06:15:38.062+0000] {ssh.py:526} INFO - Submitting Spark Job... for 2025-03-04 data
+[2025-03-09T06:16:20.686+0000] {ssh.py:526} INFO - === Spark Job Log Start ===
+[2025-03-09T06:16:20.689+0000] {ssh.py:526} INFO - Processing date: 2025-03-04
+[2025-03-09T06:16:20.690+0000] {ssh.py:526} INFO - 25/03/09 06:15:45 INFO SparkContext: Running Spark version 3.5.3
+[2025-03-09T06:16:20.690+0000] {ssh.py:526} INFO - 25/03/09 06:15:45 INFO SparkContext: OS info Linux, 6.8.0-1024-aws, amd64
+[2025-03-09T06:16:20.690+0000] {ssh.py:526} INFO - 25/03/09 06:15:45 INFO SparkContext: Java version 11.0.26
+[2025-03-09T06:16:20.690+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[2025-03-09T06:16:20.690+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO ResourceUtils: ==============================================================
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO ResourceUtils: No custom resources configured for spark.driver.
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO ResourceUtils: ==============================================================
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO SparkContext: Submitted application: json to parquet
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO ResourceProfile: Limiting resource is cpu
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO ResourceProfileManager: Added ResourceProfile id: 0
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO SecurityManager: Changing view acls to: ubuntu
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO SecurityManager: Changing modify acls to: ubuntu
+[2025-03-09T06:16:20.691+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO SecurityManager: Changing view acls groups to: 
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO SecurityManager: Changing modify acls groups to: 
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:46 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: ubuntu; groups with view permissions: EMPTY; users with modify permissions: ubuntu; groups with modify permissions: EMPTY
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:47 INFO Utils: Successfully started service 'sparkDriver' on port 37949.
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:47 INFO SparkEnv: Registering MapOutputTracker
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:47 INFO SparkEnv: Registering BlockManagerMaster
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:47 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:47 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+[2025-03-09T06:16:20.692+0000] {ssh.py:526} INFO - 25/03/09 06:15:47 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:48 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-58221ba3-e683-465a-9be2-a4573da21a8c
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:48 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:48 INFO SparkEnv: Registering OutputCommitCoordinator
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:48 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:48 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:48 INFO Utils: Successfully started service 'SparkUI' on port 4041.
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO Executor: Starting executor ID driver on host ip-172-31-12-182.ap-northeast-2.compute.internal
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO Executor: OS info Linux, 6.8.0-1024-aws, amd64
+[2025-03-09T06:16:20.693+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO Executor: Java version 11.0.26
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@4dcf7f1d for default.
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 37387.
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO NettyBlockTransferService: Server created on 0.0.0.0:37387
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 0.0.0.0, 37387, None)
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO BlockManagerMasterEndpoint: Registering block manager 0.0.0.0:37387 with 434.4 MiB RAM, BlockManagerId(driver, 0.0.0.0, 37387, None)
+[2025-03-09T06:16:20.694+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 0.0.0.0, 37387, None)
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:15:49 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 0.0.0.0, 37387, 25/03/Reading json file from: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/*.json
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:15:50 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehou25/03/09 06:15:52 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-s25/03/09 06:15:52 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:15:53 INFO MetricsSystemImpl: Scheduled Metric snapshot period25/03/09 06:15:56 INFO InMemoryFileIndex: It took 477 ms to list leaf files for 5 paths.
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:15:56 INFO InMemoryFileIndex: It took 296 ms to list leaf files for 5 paths.
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:16:03 INFO FileSourceStrategy: Pushed Filters: 
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:16:03 INFO FileSourceStrategy: Post-Scan Filters: 
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:16:04 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 201.0 KiB, free 434.2 MiB)
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 34.7 KiB, free 434.2 MiB)
+[2025-03-09T06:16:20.695+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on 0.0.0.0:37409 (size: 34.7 KiB, free: 434.4 MiB)
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO SparkContext: Created broadcast 0 from json at NativeMethodAccessorImpl.java:0
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO FileSourceScanExec: Planning scan with bin packing, max size: 21038624 bytes, open cost is considered as scanning 4194304 bytes.
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO SparkContext: Starting job: json at NativeMethodAccessorImpl.java:0
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO DAGScheduler: Got job 0 (json at NativeMethodAccessorImpl.java:0) with 1 output partitions
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO DAGScheduler: Final stage: ResultStage 0 (json at NativeMethodAccessorImpl.java:0)
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO DAGScheduler: Parents of final stage: List()
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO DAGScheduler: Missing parents: List()
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:05 INFO DAGScheduler: Submitting ResultStage 0 (MapPartitionsRDD[3] at json at NativeMethodAccessorImpl.java:0), which has no missing parents
+[2025-03-09T06:16:20.696+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 16.5 KiB, free 434.2 MiB)
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 7.8 KiB, free 434.1 MiB)
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on 0.0.0.0:37409 (size: 7.8 KiB, free: 434.4 MiB)
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1585
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at json at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0))
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks resource profile 0
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0) (ip-172-31-12-182.ap-northeast-2.compute.internal, executor driver, partition 0, PROCESS_LOCAL, 10160 bytes) 
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+[2025-03-09T06:16:20.697+0000] {ssh.py:526} INFO - 25/03/09 06:16:06 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_1.json, range: 0-13897, partition values: [empty row]
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:07 INFO CodeGenerator: Code generated in 769.955707 ms
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_4.json, range: 0-13890, partition values: [empty row]
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_2.json, range: 0-13867, partition values: [empty row]
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_0.json, range: 0-12741, partition values: [empty row]
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_3.json, range: 0-12709, partition values: [empty row]
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 2408 bytes result sent to driver
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 2111 ms on ip-172-31-12-182.ap-northeast-2.compute.internal (executor driver) (1/1)
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool 
+[2025-03-09T06:16:20.698+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO DAGScheduler: ResultStage 0 (json at NativeMethodAccessorImpl.java:0) finished in 2.646 s
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:08 INFO DAGScheduler: Job 0 finished: json at NativeMethodAccessorImpl.java:0, took 2.836469 s
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - Writing trend_analysis parquet
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:10 INFO FileSourceStrategy: Pushed Filters: IsNotNull(player_info)
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:10 INFO FileSourceStrategy: Post-Scan Filters: (size(player_info#13, true) > 0),isnotnull(player_info#13)
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO ParquetUtils: Using default output committer for Parquet: org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.699+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO CodeGenerator: Code generated in 208.497189 ms
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 200.9 KiB, free 433.9 MiB)
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 34.7 KiB, free 433.9 MiB)
+[2025-03-09T06:16:20.700+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on 0.0.0.0:37409 (size: 34.7 KiB, free: 434.3 MiB)
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO SparkContext: Created broadcast 2 from save at NativeMethodAccessorImpl.java:0
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:11 INFO FileSourceScanExec: Planning scan with bin packing, max size: 21038624 bytes, open cost is considered as scanning 4194304 bytes.
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO SparkContext: Starting job: save at NativeMethodAccessorImpl.java:0
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO DAGScheduler: Got job 1 (save at NativeMethodAccessorImpl.java:0) with 1 output partitions
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO DAGScheduler: Final stage: ResultStage 1 (save at NativeMethodAccessorImpl.java:0)
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO DAGScheduler: Parents of final stage: List()
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO DAGScheduler: Missing parents: List()
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO DAGScheduler: Submitting ResultStage 1 (MapPartitionsRDD[7] at save at NativeMethodAccessorImpl.java:0), which has no missing parents
+[2025-03-09T06:16:20.701+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 225.1 KiB, free 433.7 MiB)
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 81.0 KiB, free 433.6 MiB)
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on 0.0.0.0:37409 (size: 81.0 KiB, free: 434.2 MiB)
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1585
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (MapPartitionsRDD[7] at save at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0))
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks resource profile 0
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1) (ip-172-31-12-182.ap-northeast-2.compute.internal, executor driver, partition 0, PROCESS_LOCAL, 10160 bytes) 
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO CodeGenerator: Code generated in 286.937689 ms
+[2025-03-09T06:16:20.702+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO BlockManagerInfo: Removed broadcast_1_piece0 on 0.0.0.0:37409 in memory (size: 7.8 KiB, free: 434.3 MiB)
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO BlockManagerInfo: Removed broadcast_0_piece0 on 0.0.0.0:37409 in memory (size: 34.7 KiB, free: 434.3 MiB)
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO CodecConfig: Compression: SNAPPY
+[2025-03-09T06:16:20.703+0000] {ssh.py:526} INFO - 25/03/09 06:16:12 INFO CodecConfig: Compression: SNAPPY
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO - 25/03/09 06:16:13 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO - 25/03/09 06:16:13 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO - {
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO -   "type" : "struct",
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO -   "fields" : [ {
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO -     "name" : "match_id",
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.704+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -     "name" : "spid",
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -     "name" : "season_id",
+[2025-03-09T06:16:20.705+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "name" : "gamer_nickname",
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.706+0000] {ssh.py:526} INFO -     "name" : "position",
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "name" : "ouid",
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.707+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "name" : "spgrade",
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "name" : "matchresult",
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.708+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -     "name" : "match_date",
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -     "type" : "date",
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO -   } ]
+[2025-03-09T06:16:20.709+0000] {ssh.py:526} INFO - }
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO - and corresponding Parquet message type:
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO - message spark_schema {
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional binary match_id (STRING);
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional int32 spid;
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional int32 season_id;
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional binary gamer_nickname (STRING);
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional int32 position;
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional binary ouid (STRING);
+[2025-03-09T06:16:20.710+0000] {ssh.py:526} INFO -   optional int32 spgrade;
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO -   optional binary matchresult (STRING);
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO -   optional int32 match_date (DATE);
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO - }
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO -        
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO - 25/03/09 06:16:13 INFO CodecPool: Got brand-new compressor [.snappy]
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO - 25/03/09 06:16:14 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_1.json, range: 0-13897, partition values: [empty row]
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO - 25/03/09 06:16:14 INFO CodeGenerator: Code generated in 115.585911 ms
+[2025-03-09T06:16:20.711+0000] {ssh.py:526} INFO - 25/03/09 06:16:14 INFO CodeGenerator: Code generated in 24.21 ms
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 25/03/09 06:16:15 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_4.json, range: 0-13890, partition values: [empty row]
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 25/03/09 06:16:15 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_2.json, range: 0-13867, partition values: [empty row]
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 25/03/09 06:16:15 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_0.json, range: 0-12741, partition values: [empty row]
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 25/03/09 06:16:15 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_3.json, range: 0-12709, partition values: [empty row]
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 25/03/09 06:16:16 ERROR SparkHadoopMapRedUtil: Error committing the output of task: attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.712+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.713+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil25/03/09 06:16:16 INFO FileFormatWriter: Write Job 413108cb-52ff-4cd2-b674-4c5d2fee2ade committed. Elapsed time: 1137 ms.
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:16 INFO FileFormatWriter: Finished processing stats for write job 413108cb-52ff-4cd2-b674-4c5d2fee2ade.
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - Writing analytics parquet
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileSourceStrategy: Pushed Filters: IsNotNull(player_info)
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileSourceStrategy: Post-Scan Filters: (size(player_info#13, true) > 0),isnotnull(player_info#13)
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO ParquetUtils: Using default output committer for Parquet: org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.714+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO CodeGenerator: Code generated in 84.812903 ms
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 200.9 KiB, free 433.7 MiB)
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 34.7 KiB, free 433.6 MiB)
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on 0.0.0.0:37387 (size: 34.7 KiB, free: 434.3 MiB)
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SparkContext: Created broadcast 4 from save at NativeMethodAccessorImpl.java:0
+[2025-03-09T06:16:20.715+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO FileSourceScanExec: Planning scan with bin packing, max size: 21038624 bytes, open cost is considered as scanning 4194304 bytes.
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SparkContext: Starting job: save at NativeMethodAccessorImpl.java:0
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Got job 2 (save at NativeMethodAccessorImpl.java:0) with 1 output partitions
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Final stage: ResultStage 2 (save at NativeMethodAccessorImpl.java:0)
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Parents of final stage: List()
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Missing parents: List()
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Submitting ResultStage 2 (MapPartitionsRDD[11] at save at NativeMethodAccessorImpl.java:0), which has no missing parents
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 223.4 KiB, free 433.4 MiB)
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 80.3 KiB, free 433.3 MiB)
+[2025-03-09T06:16:20.716+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on 0.0.0.0:37387 (size: 80.3 KiB, free: 434.2 MiB)
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1585
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 2 (MapPartitionsRDD[11] at save at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0))
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO TaskSchedulerImpl: Adding task set 2.0 with 1 tasks resource profile 0
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 2) (ip-172-31-12-182.ap-northeast-2.compute.internal, executor driver, partition 0, PROCESS_LOCAL, 10160 bytes) 
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO Executor: Running task 0.0 in stage 2.0 (TID 2)
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO BlockManagerInfo: Removed broadcast_3_piece0 on 0.0.0.0:37387 in memory (size: 81.0 KiB, free: 434.3 MiB)
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO CodeGenerator: Code generated in 90.128262 ms
+[2025-03-09T06:16:20.717+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO SQLHadoopMapReduceCommitProtocol: Using user defined output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileOutputCommitter: File Output Committer Algorithm version is 1
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO SQLHadoopMapReduceCommitProtocol: Using output committer class org.apache.parquet.hadoop.ParquetOutputCommitter
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO CodecConfig: Compression: SNAPPY
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO CodecConfig: Compression: SNAPPY
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO ParquetOutputFormat: ParquetRecordWriter [block size: 134217728b, row group padding size: 8388608b, validating: false]
+[2025-03-09T06:16:20.718+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO ParquetWriteSupport: Initialized Parquet WriteSupport with Catalyst schema:
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO - {
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -   "type" : "struct",
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -   "fields" : [ {
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -     "name" : "match_id",
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.719+0000] {ssh.py:526} INFO -     "name" : "spid",
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "name" : "season_id",
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.720+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "name" : "gamer_nickname",
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "name" : "position",
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.721+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "name" : "spgrade",
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "type" : "integer",
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -   }, {
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "name" : "matchresult",
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "type" : "string",
+[2025-03-09T06:16:20.722+0000] {ssh.py:526} INFO -     "nullable" : true,
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO -     "metadata" : { }
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO -   } ]
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO - }
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO - and corresponding Parquet message type:
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO - message spark_schema {
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO -   optional binary match_id (STRING);
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO -   optional int32 spid;
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO -   optional int32 season_id;
+[2025-03-09T06:16:20.723+0000] {ssh.py:526} INFO -   optional binary gamer_nickname (STRING);
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO -   optional int32 position;
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO -   optional int32 spgrade;
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO -   optional binary matchresult (STRING);
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO - }
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO -        
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_1.json, range: 0-13897, partition values: [empty row]
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO CodeGenerator: Code generated in 69.644363 ms
+[2025-03-09T06:16:20.724+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO CodeGenerator: Code generated in 20.381425 ms
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO BlockManagerInfo: Removed broadcast_2_piece0 on 0.0.0.0:37387 in memory (size: 34.7 KiB, free: 434.3 MiB)
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_4.json, range: 0-13890, partition values: [empty row]
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_2.json, range: 0-13867, partition values: [empty row]
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_0.json, range: 0-12741, partition values: [empty row]
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO FileScanRDD: Reading File path: s3a://de5-finalproj-team2/raw_data/json/match_data/2025-03-04/group_3.json, range: 0-12709, partition values: [empty row]
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO FileOutputCommitter: Saved output of task 'attempt_202503090616177490808164064252566_0002_m_000000_2' to s3a://de5-finalproj-team2/analytics/match_data/2025-03-04/_temporary/0/task_202503090616177490808164064252566_0002_m_000000
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO SparkHadoopMapRedUtil: attempt_202503090616177490808164064252566_0002_m_000000_2: Committed. Elapsed time: 555 ms.
+[2025-03-09T06:16:20.725+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO Executor: Finished task 0.0 in stage 2.0 (TID 2). 2725 bytes result sent to driver
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 2) in 1666 ms on ip-172-31-12-182.ap-northeast-2.compute.internal (executor driver) (1/1)
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO DAGScheduler: ResultStage 2 (save at NativeMethodAccessorImpl.java:0) finished in 1.761 s
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool 
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO TaskSchedulerImpl: Killing all running tasks in stage 2: Stage finished
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO DAGScheduler: Job 2 finished: save at NativeMethodAccessorImpl.java:0, took 1.783003 s
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:19 INFO FileFormatWriter: Start to commit write Job 2bb8b144-691a-4b5e-9a9f-884070409f0f.
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO FileFormatWriter: Write Job 2bb8b144-691a-4b5e-9a9f-884070409f0f committed. Elapsed time: 833 ms.
+[2025-03-09T06:16:20.726+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO FileFormatWriter: Finished processing stats for write job 2bb8b144-691a-4b5e-9a9f-884070409f0f.
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO SparkContext: SparkContext is stopping with exitCode 0.
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO SparkUI: Stopped Spark web UI at http://0.0.0.0:4041
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO MemoryStore: MemoryStore cleared
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO BlockManager: BlockManager stopped
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO BlockManagerMaster: BlockManagerMaster stopped
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO SparkContext: Successfully stopped SparkContext
+[2025-03-09T06:16:20.727+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO ShutdownHookManager: Shutdown hook called
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO ShutdownHookManager: Deleting directory /tmp/spark-d16a9ead-ccac-4cec-a62f-35faee7462d8/pyspark-ddb4c477-61bd-408c-acb4-8180a1305b01
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO ShutdownHookManager: Deleting directory /tmp/spark-c458a9f6-fa0a-4c9f-826a-801139435818
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO ShutdownHookManager: Deleting directory /tmp/spark-d16a9ead-ccac-4cec-a62f-35faee7462d8
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO MetricsSystemImpl: Stopping s3a-file-system metrics system...
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO MetricsSystemImpl: s3a-file-system metrics system stopped.
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 25/03/09 06:16:20 INFO MetricsSystemImpl: s3a-file-system metrics system shutdown complete.
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.728+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 WARN TaskSetManager: Lost task 0.0 in stage 1.0 (TID 1) (ip-172-31-12-182.ap-northeast-2.compute.internal executor driver): org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.729+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.730+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.731+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.732+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.733+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.734+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 ERROR TaskSetManager: Task 0 in stage 1.0 failed 1 times; aborting job
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool 
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO TaskSchedulerImpl: Cancelling stage 1
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage cancelled: Job aborted due to stage failure: Task 0 in stage 1.0 failed 1 times, most recent failure: Lost task 0.0 in stage 1.0 (TID 1) (ip-172-31-12-182.ap-northeast-2.compute.internal executor driver): org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.735+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.736+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.737+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.738+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.739+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - Driver stacktrace:
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: ResultStage 1 (save at NativeMethodAccessorImpl.java:0) failed in 5.181 s due to Job aborted due to stage failure: Task 0 in stage 1.0 failed 1 times, most recent failure: Lost task 0.0 in stage 1.0 (TID 1) (ip-172-31-12-182.ap-northeast-2.compute.internal executor driver): org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.740+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.741+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.742+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.743+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.744+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.745+0000] {ssh.py:526} INFO - Driver stacktrace:
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO DAGScheduler: Job 1 failed: save at NativeMethodAccessorImpl.java:0, took 5.220606 s
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 ERROR FileFormatWriter: Aborting job 8fec15e6-9cc1-403d-85b4-54419a7e402f.
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 1.0 failed 1 times, most recent failure: Lost task 0.0 in stage 1.0 (TID 1) (ip-172-31-12-182.ap-northeast-2.compute.internal executor driver): org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.746+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.747+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.748+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.749+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.750+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - Driver stacktrace:
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.failJobAndIndependentStages(DAGScheduler.scala:2856)
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2(DAGScheduler.scala:2792)
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2$adapted(DAGScheduler.scala:2791)
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	at scala.collection.mutable.ResizableArray.foreach(ResizableArray.scala:62)
+[2025-03-09T06:16:20.751+0000] {ssh.py:526} INFO - 	at scala.collection.mutable.ResizableArray.foreach$(ResizableArray.scala:55)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:49)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:2791)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1(DAGScheduler.scala:1247)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1$adapted(DAGScheduler.scala:1247)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at scala.Option.foreach(Option.scala:407)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:1247)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:3060)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2994)
+[2025-03-09T06:16:20.752+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2983)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:49)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:989)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.SparkContext.runJob(SparkContext.scala:2393)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeWrite$4(FileFormatWriter.scala:307)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.writeAndCommit(FileFormatWriter.scala:271)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeWrite(FileFormatWriter.scala:304)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.write(FileFormatWriter.scala:190)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:190)
+[2025-03-09T06:16:20.753+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:113)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:111)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.command.DataWritingCommandExec.executeCollect(commands.scala:125)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.$anonfun$applyOrElse$1(QueryExecution.scala:107)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$6(SQLExecution.scala:125)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:201)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:108)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:900)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:66)
+[2025-03-09T06:16:20.754+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.applyOrElse(QueryExecution.scala:107)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.applyOrElse(QueryExecution.scala:98)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.TreeNode.$anonfun$transformDownWithPruning$1(TreeNode.scala:461)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:76)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruning(TreeNode.scala:461)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.org$apache$spark$sql$catalyst$plans$logical$AnalysisHelper$$super$transformDownWithPruning(LogicalPlan.scala:32)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning(AnalysisHelper.scala:267)
+[2025-03-09T06:16:20.755+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning$(AnalysisHelper.scala:263)
+[2025-03-09T06:16:20.756+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:32)
+[2025-03-09T06:16:20.756+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:32)
+[2025-03-09T06:16:20.756+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDown(TreeNode.scala:437)
+[2025-03-09T06:16:20.756+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.eagerlyExecuteCommands(QueryExecution.scala:98)
+[2025-03-09T06:16:20.756+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.commandExecuted$lzycompute(QueryExecution.scala:85)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.commandExecuted(QueryExecution.scala:83)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.assertCommandExecuted(QueryExecution.scala:142)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:869)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:391)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.saveInternal(DataFrameWriter.scala:364)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:243)
+[2025-03-09T06:16:20.757+0000] {ssh.py:526} INFO - 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at py4j.Gateway.invoke(Gateway.java:282)
+[2025-03-09T06:16:20.758+0000] {ssh.py:526} INFO - 	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:182)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at py4j.ClientServerConnection.run(ClientServerConnection.java:106)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - Caused by: org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.759+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.760+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.761+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	... 1 more
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.762+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.763+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.764+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO - Traceback (most recent call last):
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO -   File "/home/ubuntu/spark_scripts/match_info_pyspark.py", line 62, in <module>
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO -     df_match_info_trend.write.format("parquet").mode("overwrite").save(trend_output_path)
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/pyspark.zip/pyspark/sql/readwriter.py", line 1463, in save
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/py4j-0.10.9.7-src.zip/py4j/java_gateway.py", line 1322, in __call__
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/pyspark.zip/pyspark/errors/exceptions/captured.py", line 179, in deco
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/py4j-0.10.9.7-src.zip/py4j/protocol.py", line 326, in get_return_value
+[2025-03-09T06:16:20.765+0000] {ssh.py:526} INFO - py4j.protocol.Py4JJavaError: An error occurred while calling o116.save.
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - : org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 1.0 failed 1 times, most recent failure: Lost task 0.0 in stage 1.0 (TID 1) (ip-172-31-12-182.ap-northeast-2.compute.internal executor driver): org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.766+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.767+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.768+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.769+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.770+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - Driver stacktrace:
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.failJobAndIndependentStages(DAGScheduler.scala:2856)
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2(DAGScheduler.scala:2792)
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2$adapted(DAGScheduler.scala:2791)
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	at scala.collection.mutable.ResizableArray.foreach(ResizableArray.scala:62)
+[2025-03-09T06:16:20.771+0000] {ssh.py:526} INFO - 	at scala.collection.mutable.ResizableArray.foreach$(ResizableArray.scala:55)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:49)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:2791)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1(DAGScheduler.scala:1247)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1$adapted(DAGScheduler.scala:1247)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at scala.Option.foreach(Option.scala:407)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:1247)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:3060)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2994)
+[2025-03-09T06:16:20.772+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2983)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:49)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:989)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.SparkContext.runJob(SparkContext.scala:2393)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeWrite$4(FileFormatWriter.scala:307)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.writeAndCommit(FileFormatWriter.scala:271)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeWrite(FileFormatWriter.scala:304)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.write(FileFormatWriter.scala:190)
+[2025-03-09T06:16:20.773+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:190)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:113)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:111)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.command.DataWritingCommandExec.executeCollect(commands.scala:125)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.$anonfun$applyOrElse$1(QueryExecution.scala:107)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$6(SQLExecution.scala:125)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:201)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:108)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:900)
+[2025-03-09T06:16:20.774+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:66)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.applyOrElse(QueryExecution.scala:107)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.applyOrElse(QueryExecution.scala:98)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.TreeNode.$anonfun$transformDownWithPruning$1(TreeNode.scala:461)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:76)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruning(TreeNode.scala:461)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.org$apache$spark$sql$catalyst$plans$logical$AnalysisHelper$$super$transformDownWithPruning(LogicalPlan.scala:32)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning(AnalysisHelper.scala:267)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning$(AnalysisHelper.scala:263)
+[2025-03-09T06:16:20.775+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:32)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:32)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDown(TreeNode.scala:437)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.eagerlyExecuteCommands(QueryExecution.scala:98)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.commandExecuted$lzycompute(QueryExecution.scala:85)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.commandExecuted(QueryExecution.scala:83)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.QueryExecution.assertCommandExecuted(QueryExecution.scala:142)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:869)
+[2025-03-09T06:16:20.776+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:391)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.saveInternal(DataFrameWriter.scala:364)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:243)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+[2025-03-09T06:16:20.777+0000] {ssh.py:526} INFO - 	at py4j.Gateway.invoke(Gateway.java:282)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:182)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at py4j.ClientServerConnection.run(ClientServerConnection.java:106)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at java.base/java.lang.Thread.run(Thread.java:829)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - Caused by: org.apache.spark.SparkException: [TASK_WRITE_FAILED] Task failed while writing rows to s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04.
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.errors.QueryExecutionErrors$.taskFailedWhileWritingRowsError(QueryExecutionErrors.scala:775)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:420)
+[2025-03-09T06:16:20.778+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.WriteFilesExec.$anonfun$doExecuteWrite$1(WriteFiles.scala:100)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+[2025-03-09T06:16:20.779+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	... 1 more
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - Caused by: java.io.FileNotFoundException: No such file or directory: s3a://de5-finalproj-team2/trend_analysis/match_data/2025-03-04/_temporary/0/_temporary/attempt_202503090616118946855298329558021_0001_m_000000_1
+[2025-03-09T06:16:20.780+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.s3GetFileStatus(S3AFileSystem.java:3866)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerGetFileStatus(S3AFileSystem.java:3688)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.initiateRename(S3AFileSystem.java:1887)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.innerRename(S3AFileSystem.java:1988)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.lambda$rename$7(S3AFileSystem.java:1846)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.lambda$trackDurationOfOperation$5(IOStatisticsBinding.java:499)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.statistics.impl.IOStatisticsBinding.trackDuration(IOStatisticsBinding.java:444)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.trackDurationAndSpan(S3AFileSystem.java:2337)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.fs.s3a.S3AFileSystem.rename(S3AFileSystem.java:1844)
+[2025-03-09T06:16:20.781+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:600)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.commitTask(FileOutputCommitter.java:571)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.$anonfun$commitTask$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.performCommit$1(SparkHadoopMapRedUtil.scala:51)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.spark.mapred.SparkHadoopMapRedUtil$.commitTask(SparkHadoopMapRedUtil.scala:78)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.commitTask(HadoopMapReduceCommitProtocol.scala:279)
+[2025-03-09T06:16:20.782+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.$anonfun$commit$1(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.timeTakenMs(Utils.scala:552)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatDataWriter.commit(FileFormatDataWriter.scala:107)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.$anonfun$executeTask$1(FileFormatWriter.scala:404)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1397)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 	at org.apache.spark.sql.execution.datasources.FileFormatWriter$.executeTask(FileFormatWriter.scala:410)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 	... 17 more
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO BlockManagerInfo: Removed broadcast_3_piece0 on 0.0.0.0:37409 in memory (size: 81.0 KiB, free: 434.4 MiB)
+[2025-03-09T06:16:20.783+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SparkContext: Invoking stop() from shutdown hook
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:17 INFO SparkContext: SparkContext is stopping with exitCode 0.
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO SparkUI: Stopped Spark web UI at http://0.0.0.0:4040
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO MemoryStore: MemoryStore cleared
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO BlockManager: BlockManager stopped
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO BlockManagerMaster: BlockManagerMaster stopped
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO SparkContext: Successfully stopped SparkContext
+[2025-03-09T06:16:20.784+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO ShutdownHookManager: Shutdown hook called
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO ShutdownHookManager: Deleting directory /tmp/spark-22503313-9c63-45be-b1d6-d4c8eafa5c0f/pyspark-378cc700-5a2b-41bf-b1dd-8e2226753050
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO ShutdownHookManager: Deleting directory /tmp/spark-22503313-9c63-45be-b1d6-d4c8eafa5c0f
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO ShutdownHookManager: Deleting directory /tmp/spark-0911fbb0-347e-4b9c-86d4-595ce6164b15
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO MetricsSystemImpl: Stopping s3a-file-system metrics system...
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO MetricsSystemImpl: s3a-file-system metrics system stopped.
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - 25/03/09 06:16:18 INFO MetricsSystemImpl: s3a-file-system metrics system shutdown complete.
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - === Spark Job Log End ===
+[2025-03-09T06:16:20.785+0000] {ssh.py:526} INFO - Spark Job Succeeded!
+[2025-03-09T06:16:20.805+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-09T06:16:20.841+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=submit_spark_job_v3, task_id=submit_spark_via_ssh, run_id=manual__2025-03-05T00:00:00+00:00, execution_date=20250305T000000, start_date=20250309T061537, end_date=20250309T061620
+[2025-03-09T06:16:20.888+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-03-09T06:16:20.917+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-09T06:16:20.922+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

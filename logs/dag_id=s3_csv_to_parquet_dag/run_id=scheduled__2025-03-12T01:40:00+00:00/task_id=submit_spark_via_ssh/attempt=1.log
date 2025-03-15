@@ -1,0 +1,122 @@
+[2025-03-14T00:37:15.468+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-14T00:37:15.501+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: s3_csv_to_parquet_dag.submit_spark_via_ssh scheduled__2025-03-12T01:40:00+00:00 [queued]>
+[2025-03-14T00:37:15.514+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: s3_csv_to_parquet_dag.submit_spark_via_ssh scheduled__2025-03-12T01:40:00+00:00 [queued]>
+[2025-03-14T00:37:15.515+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-03-14T00:37:15.529+0000] {taskinstance.py:2330} INFO - Executing <Task(SSHOperator): submit_spark_via_ssh> on 2025-03-12 01:40:00+00:00
+[2025-03-14T00:37:15.535+0000] {standard_task_runner.py:63} INFO - Started process 2302 to run task
+[2025-03-14T00:37:15.539+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 's3_csv_to_parquet_dag', 'submit_spark_via_ssh', 'scheduled__2025-03-12T01:40:00+00:00', '--job-id', '155', '--raw', '--subdir', 'DAGS_FOLDER/s3_csv_to_parquet_dag.py', '--cfg-path', '/tmp/tmpqzu_yuz5']
+[2025-03-14T00:37:15.542+0000] {standard_task_runner.py:91} INFO - Job 155: Subtask submit_spark_via_ssh
+[2025-03-14T00:37:15.611+0000] {task_command.py:426} INFO - Running <TaskInstance: s3_csv_to_parquet_dag.submit_spark_via_ssh scheduled__2025-03-12T01:40:00+00:00 [running]> on host a0d797a25898
+[2025-03-14T00:37:15.821+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='s3_csv_to_parquet_dag' AIRFLOW_CTX_TASK_ID='submit_spark_via_ssh' AIRFLOW_CTX_EXECUTION_DATE='2025-03-12T01:40:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-12T01:40:00+00:00'
+[2025-03-14T00:37:15.821+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-14T00:37:15.885+0000] {ssh.py:151} INFO - Creating ssh_client
+[2025-03-14T00:37:15.885+0000] {ssh.py:124} INFO - ssh_hook is not provided or invalid. Trying ssh_conn_id to create SSHHook.
+[2025-03-14T00:37:15.913+0000] {base.py:84} INFO - Using connection ID 'spark_ssh_conn' for task execution.
+[2025-03-14T00:37:15.915+0000] {ssh.py:301} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2025-03-14T00:37:15.967+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-14T00:37:16.079+0000] {transport.py:1909} INFO - Authentication (publickey) successful!
+[2025-03-14T00:37:16.080+0000] {ssh.py:480} INFO - Running command: 
+    set -e
+    echo "Starting Spark Job on 2025-03-13"
+    /spark-3.5.3/bin/spark-submit /home/ubuntu/spark_scripts/rankingInfo_To_Parquet.py 2025-03-13
+    exit_code=$?
+
+    if [ $exit_code -ne 0 ]; then
+        echo "Spark Job Failed! Check logs."
+        exit 1
+    else
+        echo "Spark Job Succeeded!"
+    fi
+    
+[2025-03-14T00:37:17.051+0000] {ssh.py:526} INFO - Starting Spark Job on 2025-03-13
+[2025-03-14T00:37:22.248+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SparkContext: Running Spark version 3.5.3
+[2025-03-14T00:37:22.251+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SparkContext: OS info Linux, 6.8.0-1024-aws, amd64
+[2025-03-14T00:37:22.251+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SparkContext: Java version 11.0.26
+[2025-03-14T00:37:22.390+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[2025-03-14T00:37:22.550+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO ResourceUtils: ==============================================================
+[2025-03-14T00:37:22.552+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO ResourceUtils: No custom resources configured for spark.driver.
+[2025-03-14T00:37:22.552+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO ResourceUtils: ==============================================================
+[2025-03-14T00:37:22.552+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SparkContext: Submitted application: S3_CSV_to_Parquet
+[2025-03-14T00:37:22.585+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+[2025-03-14T00:37:22.599+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO ResourceProfile: Limiting resource is cpu
+[2025-03-14T00:37:22.600+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO ResourceProfileManager: Added ResourceProfile id: 0
+[2025-03-14T00:37:22.755+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SecurityManager: Changing view acls to: ubuntu
+[2025-03-14T00:37:22.755+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SecurityManager: Changing modify acls to: ubuntu
+[2025-03-14T00:37:22.756+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SecurityManager: Changing view acls groups to: 
+[2025-03-14T00:37:22.757+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SecurityManager: Changing modify acls groups to: 
+[2025-03-14T00:37:22.757+0000] {ssh.py:531} WARNING - 25/03/14 00:37:22 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: ubuntu; groups with view permissions: EMPTY; users with modify permissions: ubuntu; groups with modify permissions: EMPTY
+[2025-03-14T00:37:23.252+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO Utils: Successfully started service 'sparkDriver' on port 43977.
+[2025-03-14T00:37:23.325+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO SparkEnv: Registering MapOutputTracker
+[2025-03-14T00:37:23.387+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO SparkEnv: Registering BlockManagerMaster
+[2025-03-14T00:37:23.425+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+[2025-03-14T00:37:23.425+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+[2025-03-14T00:37:23.431+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+[2025-03-14T00:37:23.485+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-d5c668d4-428c-4ea2-8af4-6021c8d50eea
+[2025-03-14T00:37:23.517+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+[2025-03-14T00:37:23.540+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO SparkEnv: Registering OutputCommitCoordinator
+[2025-03-14T00:37:23.788+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+[2025-03-14T00:37:23.883+0000] {ssh.py:531} WARNING - 25/03/14 00:37:23 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+[2025-03-14T00:37:24.044+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO Executor: Starting executor ID driver on host ip-172-31-12-182.ap-northeast-2.compute.internal
+[2025-03-14T00:37:24.045+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO Executor: OS info Linux, 6.8.0-1024-aws, amd64
+[2025-03-14T00:37:24.045+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO Executor: Java version 11.0.26
+[2025-03-14T00:37:24.055+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+[2025-03-14T00:37:24.055+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@21cfa043 for default.
+[2025-03-14T00:37:24.088+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 40023.
+[2025-03-14T00:37:24.089+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO NettyBlockTransferService: Server created on 0.0.0.0:40023
+[2025-03-14T00:37:24.093+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+[2025-03-14T00:37:24.104+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 0.0.0.0, 40023, None)
+[2025-03-14T00:37:24.108+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO BlockManagerMasterEndpoint: Registering block manager 0.0.0.0:40023 with 434.4 MiB RAM, BlockManagerId(driver, 0.0.0.0, 40023, None)
+[2025-03-14T00:37:24.112+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 0.0.0.0, 40023, None)
+[2025-03-14T00:37:24.113+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 0.0.0.0, 40023, None)
+[2025-03-14T00:37:24.917+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir.
+[2025-03-14T00:37:24.927+0000] {ssh.py:531} WARNING - 25/03/14 00:37:24 INFO SharedState: Warehouse path is 'file:/home/ubuntu/spark-warehouse'.
+[2025-03-14T00:37:26.660+0000] {ssh.py:531} WARNING - 25/03/14 00:37:26 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+[2025-03-14T00:37:26.685+0000] {ssh.py:531} WARNING - 25/03/14 00:37:26 INFO MetricsSystemImpl: Scheduled Metric snapshot period at 10 second(s).
+[2025-03-14T00:37:26.686+0000] {ssh.py:531} WARNING - 25/03/14 00:37:26 INFO MetricsSystemImpl: s3a-file-system metrics system started
+[2025-03-14T00:37:29.308+0000] {ssh.py:526} INFO - Traceback (most recent call last):
+[2025-03-14T00:37:29.309+0000] {ssh.py:526} INFO -   File "/home/ubuntu/spark_scripts/rankingInfo_To_Parquet.py", line 25, in <module>
+[2025-03-14T00:37:29.309+0000] {ssh.py:526} INFO -     df = spark.read.option("header", "true").csv(S3_CSV_PATH)
+[2025-03-14T00:37:29.309+0000] {ssh.py:526} INFO -          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2025-03-14T00:37:29.309+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/pyspark.zip/pyspark/sql/readwriter.py", line 740, in csv
+[2025-03-14T00:37:29.309+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/py4j-0.10.9.7-src.zip/py4j/java_gateway.py", line 1322, in __call__
+[2025-03-14T00:37:29.309+0000] {ssh.py:526} INFO -   File "/spark-3.5.3/python/lib/pyspark.zip/pyspark/errors/exceptions/captured.py", line 185, in deco
+[2025-03-14T00:37:29.310+0000] {ssh.py:526} INFO - pyspark.errors.exceptions.captured.AnalysisException
+[2025-03-14T00:37:29.321+0000] {ssh.py:526} INFO - : 
+[2025-03-14T00:37:29.322+0000] {ssh.py:526} INFO - [PATH_NOT_FOUND] Path does not exist: s3a://de5-finalproj-team2/crawl/2025-03-14/crawl_result_processed_20250314.csv.
+[2025-03-14T00:37:29.423+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO SparkContext: Invoking stop() from shutdown hook
+[2025-03-14T00:37:29.423+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO SparkContext: SparkContext is stopping with exitCode 0.
+[2025-03-14T00:37:29.444+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO SparkUI: Stopped Spark web UI at http://0.0.0.0:4040
+[2025-03-14T00:37:29.470+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+[2025-03-14T00:37:29.489+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO MemoryStore: MemoryStore cleared
+[2025-03-14T00:37:29.490+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO BlockManager: BlockManager stopped
+[2025-03-14T00:37:29.516+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO BlockManagerMaster: BlockManagerMaster stopped
+[2025-03-14T00:37:29.522+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+[2025-03-14T00:37:29.530+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO SparkContext: Successfully stopped SparkContext
+[2025-03-14T00:37:29.531+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO ShutdownHookManager: Shutdown hook called
+[2025-03-14T00:37:29.531+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO ShutdownHookManager: Deleting directory /tmp/spark-3c6af1c6-77d8-4ed1-bd89-5eb48b11cb60
+[2025-03-14T00:37:29.534+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO ShutdownHookManager: Deleting directory /tmp/spark-cab3075d-b17d-4a02-afc5-21a4fbd38fb8
+[2025-03-14T00:37:29.538+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO ShutdownHookManager: Deleting directory /tmp/spark-3c6af1c6-77d8-4ed1-bd89-5eb48b11cb60/pyspark-d4da945d-5217-44b9-9fc7-45a086c99d79
+[2025-03-14T00:37:29.548+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO MetricsSystemImpl: Stopping s3a-file-system metrics system...
+[2025-03-14T00:37:29.549+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO MetricsSystemImpl: s3a-file-system metrics system stopped.
+[2025-03-14T00:37:29.549+0000] {ssh.py:531} WARNING - 25/03/14 00:37:29 INFO MetricsSystemImpl: s3a-file-system metrics system shutdown complete.
+[2025-03-14T00:37:29.617+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-14T00:37:29.631+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 191, in execute
+    result = self.run_ssh_client_command(ssh_client, self.command, context=context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 179, in run_ssh_client_command
+    self.raise_for_status(exit_status, agg_stderr, context=context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 173, in raise_for_status
+    raise AirflowException(f"SSH operator error: exit status = {exit_status}")
+airflow.exceptions.AirflowException: SSH operator error: exit status = 1
+[2025-03-14T00:37:29.639+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=s3_csv_to_parquet_dag, task_id=submit_spark_via_ssh, run_id=scheduled__2025-03-12T01:40:00+00:00, execution_date=20250312T014000, start_date=20250314T003715, end_date=20250314T003729
+[2025-03-14T00:37:29.656+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 155 for task submit_spark_via_ssh (SSH operator error: exit status = 1; 2302)
+[2025-03-14T00:37:29.699+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-14T00:37:29.731+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-14T00:37:29.733+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

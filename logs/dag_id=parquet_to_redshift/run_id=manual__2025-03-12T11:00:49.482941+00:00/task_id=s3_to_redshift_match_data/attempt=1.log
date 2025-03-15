@@ -1,0 +1,34 @@
+[2025-03-12T11:00:50.763+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-12T11:00:50.786+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: parquet_to_redshift.s3_to_redshift_match_data manual__2025-03-12T11:00:49.482941+00:00 [queued]>
+[2025-03-12T11:00:50.795+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: parquet_to_redshift.s3_to_redshift_match_data manual__2025-03-12T11:00:49.482941+00:00 [queued]>
+[2025-03-12T11:00:50.795+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-03-12T11:00:50.809+0000] {taskinstance.py:2330} INFO - Executing <Task(S3ToRedshiftOperator): s3_to_redshift_match_data> on 2025-03-12 11:00:49.482941+00:00
+[2025-03-12T11:00:50.815+0000] {standard_task_runner.py:63} INFO - Started process 27382 to run task
+[2025-03-12T11:00:50.818+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'parquet_to_redshift', 's3_to_redshift_match_data', 'manual__2025-03-12T11:00:49.482941+00:00', '--job-id', '80', '--raw', '--subdir', 'DAGS_FOLDER/match_info_redshift_dag.py', '--cfg-path', '/tmp/tmp7__ztz99']
+[2025-03-12T11:00:50.820+0000] {standard_task_runner.py:91} INFO - Job 80: Subtask s3_to_redshift_match_data
+[2025-03-12T11:00:50.888+0000] {task_command.py:426} INFO - Running <TaskInstance: parquet_to_redshift.s3_to_redshift_match_data manual__2025-03-12T11:00:49.482941+00:00 [running]> on host a0d797a25898
+[2025-03-12T11:00:51.028+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='parquet_to_redshift' AIRFLOW_CTX_TASK_ID='s3_to_redshift_match_data' AIRFLOW_CTX_EXECUTION_DATE='2025-03-12T11:00:49.482941+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-03-12T11:00:49.482941+00:00'
+[2025-03-12T11:00:51.029+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-12T11:00:51.059+0000] {base.py:84} INFO - Using connection ID 's3_conn_team' for task execution.
+[2025-03-12T11:00:51.072+0000] {base.py:84} INFO - Using connection ID 's3_conn_team' for task execution.
+[2025-03-12T11:00:51.072+0000] {connection_wrapper.py:384} INFO - AWS Connection (conn_id='s3_conn_team', conn_type='aws') credentials retrieved from login and password.
+[2025-03-12T11:00:51.084+0000] {s3_to_redshift.py:193} INFO - Executing COPY command...
+[2025-03-12T11:00:51.098+0000] {base.py:84} INFO - Using connection ID 'redshift_conn_team' for task execution.
+[2025-03-12T11:00:51.508+0000] {sql.py:470} INFO - Running statement: BEGIN;, parameters: None
+[2025-03-12T11:00:51.516+0000] {sql.py:470} INFO - Running statement: DELETE FROM analytics.match_info;, parameters: None
+[2025-03-12T11:00:51.572+0000] {sql.py:479} INFO - Rows affected: 0
+[2025-03-12T11:00:51.573+0000] {sql.py:470} INFO - Running statement: 
+                    COPY analytics.match_info 
+                    FROM 's3://de5-finalproj-team2/analytics/match_data/2025-03-12/'
+                    credentials
+                    'aws_access_key_id=AKIA4RRVVY55RK5T7HCV;aws_secret_access_key=***'
+                    
+                    FORMAT AS PARQUET;
+        , parameters: None
+[2025-03-12T11:01:01.422+0000] {sql.py:470} INFO - Running statement: COMMIT, parameters: None
+[2025-03-12T11:01:01.509+0000] {s3_to_redshift.py:198} INFO - COPY command complete...
+[2025-03-12T11:01:01.510+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-12T11:01:01.567+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=parquet_to_redshift, task_id=s3_to_redshift_match_data, run_id=manual__2025-03-12T11:00:49.482941+00:00, execution_date=20250312T110049, start_date=20250312T110050, end_date=20250312T110101
+[2025-03-12T11:01:01.651+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-03-12T11:01:01.718+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-12T11:01:01.721+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

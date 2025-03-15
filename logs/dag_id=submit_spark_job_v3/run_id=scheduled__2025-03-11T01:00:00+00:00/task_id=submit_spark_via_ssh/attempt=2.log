@@ -1,0 +1,65 @@
+[2025-03-12T01:05:18.760+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-12T01:05:18.795+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: submit_spark_job_v3.submit_spark_via_ssh scheduled__2025-03-11T01:00:00+00:00 [queued]>
+[2025-03-12T01:05:18.811+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: submit_spark_job_v3.submit_spark_via_ssh scheduled__2025-03-11T01:00:00+00:00 [queued]>
+[2025-03-12T01:05:18.811+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 2
+[2025-03-12T01:05:18.830+0000] {taskinstance.py:2330} INFO - Executing <Task(SSHOperator): submit_spark_via_ssh> on 2025-03-11 01:00:00+00:00
+[2025-03-12T01:05:18.836+0000] {standard_task_runner.py:63} INFO - Started process 2680 to run task
+[2025-03-12T01:05:18.841+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'submit_spark_job_v3', 'submit_spark_via_ssh', 'scheduled__2025-03-11T01:00:00+00:00', '--job-id', '68', '--raw', '--subdir', 'DAGS_FOLDER/match_info_spark_process_dag.py', '--cfg-path', '/tmp/tmpr657d1jp']
+[2025-03-12T01:05:18.843+0000] {standard_task_runner.py:91} INFO - Job 68: Subtask submit_spark_via_ssh
+[2025-03-12T01:05:18.922+0000] {task_command.py:426} INFO - Running <TaskInstance: submit_spark_job_v3.submit_spark_via_ssh scheduled__2025-03-11T01:00:00+00:00 [running]> on host a0d797a25898
+[2025-03-12T01:05:19.060+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='submit_spark_job_v3' AIRFLOW_CTX_TASK_ID='submit_spark_via_ssh' AIRFLOW_CTX_EXECUTION_DATE='2025-03-11T01:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-11T01:00:00+00:00'
+[2025-03-12T01:05:19.061+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-12T01:05:19.078+0000] {ssh.py:151} INFO - Creating ssh_client
+[2025-03-12T01:05:19.079+0000] {ssh.py:124} INFO - ssh_hook is not provided or invalid. Trying ssh_conn_id to create SSHHook.
+[2025-03-12T01:05:19.094+0000] {base.py:84} INFO - Using connection ID 'spark_ssh_conn' for task execution.
+[2025-03-12T01:05:19.096+0000] {ssh.py:301} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2025-03-12T01:05:19.101+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-12T01:05:19.204+0000] {transport.py:1909} INFO - Authentication (publickey) successful!
+[2025-03-12T01:05:19.205+0000] {ssh.py:480} INFO - Running command: 
+    set -e  # 명령어 실패 시 즉시 종료
+    echo "Starting Spark Job on 2025-03-12"
+
+    echo "Submitting Spark Job... for 2025-03-12 data"
+   /spark-3.5.3/bin/spark-submit /home/ubuntu/spark_scripts/match_info_pyspark.py 2025-03-12 > spark_job.log 2>&1
+    exit_code=$?
+
+    # 실행 로그 출력 (Airflow에서 확인 가능)
+    if [ -f spark_job.log ]; then
+        echo "=== Spark Job Log Start ==="
+        cat spark_job.log
+        echo "=== Spark Job Log End ==="
+    else
+        echo "Warning: spark_job.log not found!"
+    fi
+
+    # Spark 실패 감지
+    if [ $exit_code -ne 0 ]; then
+        echo "Spark Job Failed! Check logs."
+        exit 1
+    else
+        echo "Spark Job Succeeded!"
+    fi
+    
+[2025-03-12T01:05:19.775+0000] {ssh.py:526} INFO - Starting Spark Job on 2025-03-12
+[2025-03-12T01:05:19.775+0000] {ssh.py:526} INFO - Submitting Spark Job... for 2025-03-12 data
+[2025-03-12T01:05:30.015+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-12T01:05:30.030+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 191, in execute
+    result = self.run_ssh_client_command(ssh_client, self.command, context=context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 179, in run_ssh_client_command
+    self.raise_for_status(exit_status, agg_stderr, context=context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 173, in raise_for_status
+    raise AirflowException(f"SSH operator error: exit status = {exit_status}")
+airflow.exceptions.AirflowException: SSH operator error: exit status = 1
+[2025-03-12T01:05:30.034+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=submit_spark_job_v3, task_id=submit_spark_via_ssh, run_id=scheduled__2025-03-11T01:00:00+00:00, execution_date=20250311T010000, start_date=20250312T010518, end_date=20250312T010530
+[2025-03-12T01:05:30.048+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 68 for task submit_spark_via_ssh (SSH operator error: exit status = 1; 2680)
+[2025-03-12T01:05:30.072+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-12T01:05:30.102+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-12T01:05:30.106+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
