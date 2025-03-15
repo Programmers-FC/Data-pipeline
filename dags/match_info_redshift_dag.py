@@ -4,11 +4,22 @@ from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from datetime import datetime,timedelta
 import logging
 from airflow.operators.dummy import DummyOperator
+from airflow.operators.bash import BashOperator
 
+
+default_args = {
+    "owner": "airflow",
+    "start_date": None,
+    "retries": 1,
+    "wait_for_downstream": True,
+    "depends_on_past":True
+}
+
+ 
 dag = DAG(
-    dag_id = 'parquet_to_redshift',
+    dag_id = 'match_info_to_redshift_dag',
     start_date = datetime(2025,3,7), 
-    schedule = '0 7 * * *',  
+    schedule_interval = None, #기존: schedule_interval = '0 3 * * *', 
     max_active_runs = 1,
     catchup = False,
     tags = ['s3','match_info','redshift','parquet'],
@@ -49,5 +60,13 @@ s3_to_redshift_match_info = S3ToRedshiftOperator(
 #     dag = dag
 # )
 
+# hello_task = BashOperator(
+#     task_id='print_hello',  # 태스크 ID
+#     bash_command='echo "Hello Redshift"',  # 실행할 명령어
+#     dag = dag
+# )
 
-update_redshift >> s3_to_redshift_match_info #>> s3_to_redshift_match_trend_info
+# update_redshift >> s3_to_redshift_match_info #>> s3_to_redshift_match_trend_info
+
+
+update_redshift >> s3_to_redshift_match_info

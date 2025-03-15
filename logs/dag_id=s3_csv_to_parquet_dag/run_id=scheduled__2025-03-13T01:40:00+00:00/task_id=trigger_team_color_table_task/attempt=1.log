@@ -1,0 +1,15 @@
+[2025-03-14T01:46:06.457+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-14T01:46:06.498+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: s3_csv_to_parquet_dag.trigger_team_color_table_task scheduled__2025-03-13T01:40:00+00:00 [queued]>
+[2025-03-14T01:46:06.513+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: s3_csv_to_parquet_dag.trigger_team_color_table_task scheduled__2025-03-13T01:40:00+00:00 [queued]>
+[2025-03-14T01:46:06.514+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2025-03-14T01:46:06.537+0000] {taskinstance.py:2330} INFO - Executing <Task(TriggerDagRunOperator): trigger_team_color_table_task> on 2025-03-13 01:40:00+00:00
+[2025-03-14T01:46:06.551+0000] {standard_task_runner.py:63} INFO - Started process 6522 to run task
+[2025-03-14T01:46:06.563+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 's3_csv_to_parquet_dag', 'trigger_team_color_table_task', 'scheduled__2025-03-13T01:40:00+00:00', '--job-id', '162', '--raw', '--subdir', 'DAGS_FOLDER/s3_csv_to_parquet_dag.py', '--cfg-path', '/tmp/tmpfwgbmftx']
+[2025-03-14T01:46:06.567+0000] {standard_task_runner.py:91} INFO - Job 162: Subtask trigger_team_color_table_task
+[2025-03-14T01:46:06.684+0000] {task_command.py:426} INFO - Running <TaskInstance: s3_csv_to_parquet_dag.trigger_team_color_table_task scheduled__2025-03-13T01:40:00+00:00 [running]> on host a0d797a25898
+[2025-03-14T01:46:06.910+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='s3_csv_to_parquet_dag' AIRFLOW_CTX_TASK_ID='trigger_team_color_table_task' AIRFLOW_CTX_EXECUTION_DATE='2025-03-13T01:40:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-13T01:40:00+00:00'
+[2025-03-14T01:46:06.911+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-14T01:46:09.798+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-14T01:46:09.838+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=s3_csv_to_parquet_dag, task_id=trigger_team_color_table_task, run_id=scheduled__2025-03-13T01:40:00+00:00, execution_date=20250313T014000, start_date=20250314T014606, end_date=20250314T014609
+[2025-03-14T01:46:09.928+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-03-14T01:46:09.971+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

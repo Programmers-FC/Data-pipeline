@@ -1,0 +1,154 @@
+[2025-03-09T04:34:11.805+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-09T04:34:11.829+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [queued]>
+[2025-03-09T04:34:11.839+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [queued]>
+[2025-03-09T04:34:11.840+0000] {taskinstance.py:2306} INFO - Starting attempt 10 of 10
+[2025-03-09T04:34:11.854+0000] {taskinstance.py:2330} INFO - Executing <Task(SSHOperator): submit_spark_via_ssh> on 2025-03-07 00:00:00+00:00
+[2025-03-09T04:34:11.859+0000] {standard_task_runner.py:63} INFO - Started process 5687 to run task
+[2025-03-09T04:34:11.862+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'submit_spark_job_v2', 'submit_spark_via_ssh', 'scheduled__2025-03-07T00:00:00+00:00', '--job-id', '19', '--raw', '--subdir', 'DAGS_FOLDER/match_info_spark_process_v2.py', '--cfg-path', '/tmp/tmp2uas5fs5']
+[2025-03-09T04:34:11.864+0000] {standard_task_runner.py:91} INFO - Job 19: Subtask submit_spark_via_ssh
+[2025-03-09T04:34:11.932+0000] {task_command.py:426} INFO - Running <TaskInstance: submit_spark_job_v2.submit_spark_via_ssh scheduled__2025-03-07T00:00:00+00:00 [running]> on host 40942f81e2c9
+[2025-03-09T04:34:12.054+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='submit_spark_job_v2' AIRFLOW_CTX_TASK_ID='submit_spark_via_ssh' AIRFLOW_CTX_EXECUTION_DATE='2025-03-07T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='10' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-03-07T00:00:00+00:00'
+[2025-03-09T04:34:12.055+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-09T04:34:12.071+0000] {ssh.py:151} INFO - Creating ssh_client
+[2025-03-09T04:34:12.071+0000] {ssh.py:124} INFO - ssh_hook is not provided or invalid. Trying ssh_conn_id to create SSHHook.
+[2025-03-09T04:34:12.086+0000] {base.py:84} INFO - Using connection ID 'spark_ssh_conn' for task execution.
+[2025-03-09T04:34:12.087+0000] {ssh.py:301} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2025-03-09T04:34:12.092+0000] {transport.py:1909} INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+[2025-03-09T04:34:12.155+0000] {transport.py:1909} INFO - Authentication (publickey) successful!
+[2025-03-09T04:34:12.156+0000] {ssh.py:480} INFO - Running command: 
+    set -e  # 명령어 실패 시 즉시 종료
+    echo "Starting Spark Job on ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com"
+
+    ssh -vvv -i local-executor-***/plugins/programmers-fc-key.pem ubuntu@ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com << 'EOF'
+    echo "Submitting Spark Job..."
+    spark-submit /home/ubuntu/spark_scripts/match_info_pyspark.py --processing_date 2025-03-08 > spark_job.log 2>&1
+    exit_code=$?
+
+    # 실행 로그 출력 (Airflow에서 확인 가능)
+    cat spark_job.log
+
+    # Spark 실패 감지
+    if [ $exit_code -ne 0 ]; then
+        echo "Spark Job Failed! Check logs."
+        exit 1
+    else
+        echo "Spark Job Succeeded!"
+    fi
+    EOF
+    
+[2025-03-09T04:34:12.740+0000] {ssh.py:526} INFO - Starting Spark Job on ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com
+[2025-03-09T04:34:12.741+0000] {ssh.py:531} WARNING - bash: line 21: warning: here-document at line 5 delimited by end-of-file (wanted `EOF')
+[2025-03-09T04:34:12.745+0000] {ssh.py:531} WARNING - Warning: Identity file local-executor-***/plugins/programmers-fc-key.pem not accessible: No such file or directory.
+[2025-03-09T04:34:12.745+0000] {ssh.py:531} WARNING - OpenSSH_9.6p1 Ubuntu-3ubuntu13.8, OpenSSL 3.0.13 30 Jan 2024
+[2025-03-09T04:34:12.746+0000] {ssh.py:531} WARNING - debug1: Reading configuration data /etc/ssh/ssh_config
+[2025-03-09T04:34:12.746+0000] {ssh.py:531} WARNING - debug1: /etc/ssh/ssh_config line 19: include /etc/ssh/ssh_config.d/*.conf matched no files
+[2025-03-09T04:34:12.746+0000] {ssh.py:531} WARNING - debug1: /etc/ssh/ssh_config line 21: Applying options for *
+[2025-03-09T04:34:12.747+0000] {ssh.py:531} WARNING - Pseudo-terminal will not be allocated because stdin is not a terminal.
+[2025-03-09T04:34:12.747+0000] {ssh.py:531} WARNING - debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/ubuntu/.ssh/known_hosts'
+[2025-03-09T04:34:12.747+0000] {ssh.py:531} WARNING - debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/ubuntu/.ssh/known_hosts2'
+[2025-03-09T04:34:12.748+0000] {ssh.py:531} WARNING - debug2: resolving "ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com" port 22
+[2025-03-09T04:34:12.748+0000] {ssh.py:531} WARNING - debug3: resolve_host: lookup ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com:22
+[2025-03-09T04:34:12.748+0000] {ssh.py:531} WARNING - debug3: channel_clear_timeouts: clearing
+[2025-03-09T04:34:12.748+0000] {ssh.py:531} WARNING - debug3: ssh_connect_direct: entering
+[2025-03-09T04:34:12.749+0000] {ssh.py:531} WARNING - debug1: Connecting to ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com [172.31.12.182] port 22.
+[2025-03-09T04:34:12.749+0000] {ssh.py:531} WARNING - debug3: set_sock_tos: set socket 3 IP_TOS 0x10
+[2025-03-09T04:34:12.749+0000] {ssh.py:531} WARNING - debug1: Connection established.
+[2025-03-09T04:34:12.749+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_rsa type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_rsa-cert type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ecdsa type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ecdsa-cert type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ecdsa_sk type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ecdsa_sk-cert type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ed25519 type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ed25519-cert type -1
+[2025-03-09T04:34:12.750+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ed25519_sk type -1
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_ed25519_sk-cert type -1
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_xmss type -1
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_xmss-cert type -1
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_dsa type -1
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: identity file /home/ubuntu/.ssh/id_dsa-cert type -1
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: Local version string SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.8
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: Remote protocol version 2.0, remote software version OpenSSH_9.6p1 Ubuntu-3ubuntu13.8
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug1: compat_banner: match: OpenSSH_9.6p1 Ubuntu-3ubuntu13.8 pat OpenSSH* compat 0x04000000
+[2025-03-09T04:34:12.751+0000] {ssh.py:531} WARNING - debug2: fd 3 setting O_NONBLOCK
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug1: Authenticating to ec2-3-37-216-159.ap-northeast-2.compute.amazonaws.com:22 as 'ubuntu'
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /home/ubuntu/.ssh/known_hosts: No such file or directory
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /home/ubuntu/.ssh/known_hosts2: No such file or directory
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug3: order_hostkeyalgs: no algorithms matched; accept original
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug3: send packet: type 20
+[2025-03-09T04:34:12.752+0000] {ssh.py:531} WARNING - debug1: SSH2_MSG_KEXINIT sent
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug3: receive packet: type 20
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug1: SSH2_MSG_KEXINIT received
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug2: local client KEXINIT proposal
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug2: KEX algorithms: sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256,ext-info-c,kex-strict-c-v00@openssh.com
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug2: host key algorithms: ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug2: ciphers ctos: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug2: ciphers stoc: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+[2025-03-09T04:34:12.753+0000] {ssh.py:531} WARNING - debug2: MACs ctos: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: MACs stoc: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: compression ctos: none,zlib@openssh.com,zlib
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: compression stoc: none,zlib@openssh.com,zlib
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: languages ctos: 
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: languages stoc: 
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: first_kex_follows 0 
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: reserved 0 
+[2025-03-09T04:34:12.754+0000] {ssh.py:531} WARNING - debug2: peer server KEXINIT proposal
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: KEX algorithms: sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256,ext-info-s,kex-strict-s-v00@openssh.com
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: host key algorithms: rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp256,ssh-ed25519
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: ciphers ctos: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: ciphers stoc: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: MACs ctos: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: MACs stoc: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: compression ctos: none,zlib@openssh.com
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: compression stoc: none,zlib@openssh.com
+[2025-03-09T04:34:12.755+0000] {ssh.py:531} WARNING - debug2: languages ctos: 
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug2: languages stoc: 
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug2: first_kex_follows 0 
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug2: reserved 0 
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug3: kex_choose_conf: will use strict KEX ordering
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug1: kex: algorithm: sntrup761x25519-sha512@openssh.com
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug1: kex: host key algorithm: ssh-ed25519
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+[2025-03-09T04:34:12.756+0000] {ssh.py:531} WARNING - debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+[2025-03-09T04:34:12.828+0000] {ssh.py:531} WARNING - debug3: send packet: type 30
+[2025-03-09T04:34:12.828+0000] {ssh.py:531} WARNING - debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+[2025-03-09T04:34:12.842+0000] {ssh.py:531} WARNING - debug3: receive packet: type 31
+[2025-03-09T04:34:12.843+0000] {ssh.py:531} WARNING - debug1: SSH2_MSG_KEX_ECDH_REPLY received
+[2025-03-09T04:34:12.844+0000] {ssh.py:531} WARNING - debug1: Server host key: ssh-ed25519 SHA256:q2vtQ7C8Z4BSL6YIzL/TNaYDdn9IVNdVXKzB95w5wko
+[2025-03-09T04:34:12.844+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /home/ubuntu/.ssh/known_hosts: No such file or directory
+[2025-03-09T04:34:12.844+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /home/ubuntu/.ssh/known_hosts2: No such file or directory
+[2025-03-09T04:34:12.844+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+[2025-03-09T04:34:12.844+0000] {ssh.py:531} WARNING - debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug3: hostkeys_find_by_key_hostfile: trying user hostfile "/home/ubuntu/.ssh/known_hosts"
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug1: hostkeys_find_by_key_hostfile: hostkeys file /home/ubuntu/.ssh/known_hosts does not exist
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug3: hostkeys_find_by_key_hostfile: trying user hostfile "/home/ubuntu/.ssh/known_hosts2"
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug1: hostkeys_find_by_key_hostfile: hostkeys file /home/ubuntu/.ssh/known_hosts2 does not exist
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug3: hostkeys_find_by_key_hostfile: trying system hostfile "/etc/ssh/ssh_known_hosts"
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug1: hostkeys_find_by_key_hostfile: hostkeys file /etc/ssh/ssh_known_hosts does not exist
+[2025-03-09T04:34:12.845+0000] {ssh.py:531} WARNING - debug3: hostkeys_find_by_key_hostfile: trying system hostfile "/etc/ssh/ssh_known_hosts2"
+[2025-03-09T04:34:12.846+0000] {ssh.py:531} WARNING - debug1: hostkeys_find_by_key_hostfile: hostkeys file /etc/ssh/ssh_known_hosts2 does not exist
+[2025-03-09T04:34:12.846+0000] {ssh.py:531} WARNING - debug1: read_passphrase: can't open /dev/tty: No such device or address
+[2025-03-09T04:34:12.846+0000] {ssh.py:531} WARNING - Host key verification failed.
+[2025-03-09T04:34:12.864+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-09T04:34:12.878+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 191, in execute
+    result = self.run_ssh_client_command(ssh_client, self.command, context=context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 179, in run_ssh_client_command
+    self.raise_for_status(exit_status, agg_stderr, context=context)
+  File "/home/airflow/.local/lib/python3.9/site-packages/airflow/providers/ssh/operators/ssh.py", line 173, in raise_for_status
+    raise AirflowException(f"SSH operator error: exit status = {exit_status}")
+airflow.exceptions.AirflowException: SSH operator error: exit status = 255
+[2025-03-09T04:34:12.882+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=submit_spark_job_v2, task_id=submit_spark_via_ssh, run_id=scheduled__2025-03-07T00:00:00+00:00, execution_date=20250307T000000, start_date=20250309T043411, end_date=20250309T043412
+[2025-03-09T04:34:12.894+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 19 for task submit_spark_via_ssh (SSH operator error: exit status = 255; 5687)
+[2025-03-09T04:34:12.917+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-03-09T04:34:12.939+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-03-09T04:34:12.941+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

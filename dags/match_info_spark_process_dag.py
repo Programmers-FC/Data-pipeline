@@ -3,19 +3,21 @@ from airflow.providers.ssh.operators.ssh import SSHOperator
 from datetime import datetime
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.operators.bash import BashOperator
 
-default_args = {
+DEFAULT_ARGS = {
     "owner": "airflow",
-    "start_date": datetime(2025, 3, 5),
+    "start_date": None,
     "retries": 1,
     "wait_for_downstream": True,
     "depends_on_past":True
 }
 
+#schedule_interval="55 2 * * *",
 dag = DAG(
-    dag_id="submit_spark_job_v3",
-    default_args=default_args,
-    schedule_interval="0 7 * * *",
+    dag_id="match_info_spark_processing_dag",
+    default_args=DEFAULT_ARGS,
+    schedule_interval=None,
     tags=['s3', 'match_info', 'raw_data', 'parquet', 'spark'],
     catchup=True,
     max_active_runs = 1
@@ -62,11 +64,14 @@ ssh_spark_submit = SSHOperator(
 )
 
 
+
+
 trigger_redshift_dag = TriggerDagRunOperator(
     task_id="trigger_redshift_dag_task",
-    trigger_dag_id="parquet_to_redshift",
-    wait_for_completion=True
+    trigger_dag_id="match_info_to_redshift_dag",
+    wait_for_completion=False
 )
 
 
 process_match_info >> ssh_spark_submit >> trigger_redshift_dag
+#process_match_info >> hello_task >> trigger_redshift_dag

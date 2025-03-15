@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.providers.ssh.operators.ssh import SSHOperator
 from datetime import datetime, timedelta
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 # DAG 기본 설정
 default_args = {
@@ -8,12 +9,14 @@ default_args = {
     "start_date": datetime(2025, 3, 9), 
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
+    "wait_for_downstream": True,
+    "depends_on_past":True
 }
 
 dag = DAG(
     "s3_csv_to_parquet_dag",
     default_args=default_args,
-    schedule_interval="0 12 * * *",
+    schedule_interval="10 2 * * *", # KST 오전 11시 10분에 시작
     catchup=False,
 )
 
@@ -43,4 +46,18 @@ ssh_spark_submit = SSHOperator(
     dag=dag,
 )
 
-ssh_spark_submit
+#Team color table을 생성하는 Dag 트기거
+trigger_team_color_dag = TriggerDagRunOperator(
+    task_id="trigger_team_color_table_task",
+    trigger_dag_id="team_color_to_parquet_dag",
+    wait_for_completion=False
+)
+
+#Team color table을 생성하는 Dag 트기거
+trigger_ranking_redshift_dag = TriggerDagRunOperator(
+    task_id="trigger_ranking_info_redshift_task",
+    trigger_dag_id="daily_ranking_info_update",
+    wait_for_completion=False
+)
+
+ssh_spark_submit >> [trigger_team_color_dag,trigger_ranking_redshift_dag]

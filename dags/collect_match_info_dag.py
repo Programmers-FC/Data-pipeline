@@ -14,16 +14,37 @@ import random
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.operators.dummy import DummyOperator
 
+DEFAULT_ARGS = {
+    "owner": "airflow",
+    "retries": 1,
+    "wait_for_downstream": True,
+    "depends_on_past":True
+}
+
+
+default_dag = DAG(
+    dag_id="collect_match_info_dag",
+    default_args=DEFAULT_ARGS,
+    description="Collect match data from Nexon API and save to s3 as json",
+    schedule_interval= None,             #기존: "40 1 * * *",
+    start_date=datetime(2025,3,8),
+    catchup=False,
+    max_active_runs=1,
+    tags=["nexon", "sync", "json", "api"],
+)
+
+# Nexon API 설정
+API_KEYS = Variable.get('api_4_account_key_mix_1', deserialize_json=True)
+# API_KEYS = API_KEYS[-1] ############################################## For testing only
+API_LIMIT = 1000
+api_usage = {key: 0 for key in API_KEYS}
+current_key_idx = 0
+
+
 log = LoggingMixin().log
 
 AWS_ACCESS_KEY = Variable.get("s3_access_key_team")
 AWS_SECRET_KEY = Variable.get("s3_secret_key_team")
-
-# Nexon API 설정
-API_KEYS = Variable.get('api_4_account_key_mix_1', deserialize_json=True)
-API_LIMIT = 1000
-api_usage = {key: 0 for key in API_KEYS}
-current_key_idx = 0
 
 
 def get_current_api_key():
@@ -128,14 +149,13 @@ def process_data(execution_date,execution_date_nodash):
     # S3 설정
     S3_BUCKET = "de5-finalproj-team2"
     S3_KEY_CRAWL_PREFIX = f"crawl/{execution_date}/crawl_result_processed_{execution_date_nodash}.csv"
-  #"s3://de5-finalproj-team2/crawl/2025-03-07/crawl_result_processed_20250307.csv"
     S3_KEY_JSON_PREFIX = "raw_data/json"
 
 
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
     obj = s3.get_object(Bucket=S3_BUCKET, Key=S3_KEY_CRAWL_PREFIX)
     df = pd.read_csv(obj['Body'])
-    nickname_list = df['감독명'].tolist()[:1000]
+    nickname_list = df['감독명'].tolist()[:1000] ######################Testing only. change to 1000 when finished testing.
 
     results, ouid_missing, no_recent_match = [], [], []
 
@@ -144,6 +164,7 @@ def process_data(execution_date,execution_date_nodash):
         if result:
             results.append(result)
 
+    log.info("collecting match_info complete!")
     s3_fs = boto3.resource('s3',aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
 
     s3_fs.Object(S3_BUCKET, f"{S3_KEY_JSON_PREFIX}/match_data/{execution_date}/group_0.json").put(Body=json.dumps(results, ensure_ascii=False))
@@ -151,31 +172,11 @@ def process_data(execution_date,execution_date_nodash):
     s3_fs.Object(S3_BUCKET, f"{S3_KEY_JSON_PREFIX}/errors/{execution_date}/no_recent_match/no_recent_match_list.json").put(Body=json.dumps(no_recent_match, ensure_ascii=False))
     s3_fs.Object(S3_BUCKET, f"{S3_KEY_JSON_PREFIX}/api_key_usage/{execution_date}/api_key_usage.json").put(Body=json.dumps(api_usage, ensure_ascii=False))
 
-DEFAULT_ARGS = {
-    "owner": "airflow",
-    "depends_on_past": False,
-    "wait_for_downstream": True,
-    "retries": 1,
-    "retry_delay": timedelta(minutes=1),
-}
-
-default_dag = DAG(
-    dag_id="fetch_nexon_data_sequential",
-    default_args=DEFAULT_ARGS,
-    description="Collect data from Nexon API and save to s3 as json",
-    schedule_interval="0 7 * * *",
-    start_date=datetime(2025,3,8),
-    catchup=False,
-    max_active_runs=1,
-    tags=["nexon", "sync", "json", "api"],
-)
 
 # NEXON_API에서 수집한 데이터 s3에 저장하는 Task
 collect_data_task = PythonOperator(
     task_id="collect_and_save_match_data_to_json_to_s3",
     python_callable=process_data,
-    # op_kwargs={"execution_date": "{{ dag_run.logical_date.strftime('%Y-%m-%d') }}",
-    #             "execution_date_nodash": "{{ dag_run.logical_date.strftime('%Y%m%d') }}"},  
     op_kwargs = {"execution_date":'{{ data_interval_end | ds }}',
                 "execution_date_nodash":'{{ data_interval_end | ds_nodash }}'},
     dag=default_dag,
@@ -183,11 +184,9 @@ collect_data_task = PythonOperator(
 
 trigger_spark_dag = TriggerDagRunOperator(
     task_id="trigger_spark_match_info_task",
-    trigger_dag_id="submit_spark_job_v3",
-    wait_for_completion=True,
+    trigger_dag_id="match_info_spark_processing_dag",
+    wait_for_completion=False,
 )
 
-collect_match_info = DummyOperator(task_id="collect_match_info_starter")
-
-collect_match_info >> collect_data_task >> trigger_spark_dag
+collect_data_task >> trigger_spark_dag
 

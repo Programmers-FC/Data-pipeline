@@ -1,0 +1,28 @@
+[2025-03-14T09:43:09.200+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-03-14T09:43:09.246+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: collect_match_info_dag.collect_and_save_match_data_to_json_to_s3 manual__2025-03-14T09:43:05.533886+00:00 [queued]>
+[2025-03-14T09:43:09.263+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: collect_match_info_dag.collect_and_save_match_data_to_json_to_s3 manual__2025-03-14T09:43:05.533886+00:00 [queued]>
+[2025-03-14T09:43:09.263+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2025-03-14T09:43:09.452+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): collect_and_save_match_data_to_json_to_s3> on 2025-03-14 09:43:05.533886+00:00
+[2025-03-14T09:43:09.462+0000] {standard_task_runner.py:63} INFO - Started process 37859 to run task
+[2025-03-14T09:43:09.468+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'collect_match_info_dag', 'collect_and_save_match_data_to_json_to_s3', 'manual__2025-03-14T09:43:05.533886+00:00', '--job-id', '220', '--raw', '--subdir', 'DAGS_FOLDER/collect_match_info_dag.py', '--cfg-path', '/tmp/tmpz_vx8ax0']
+[2025-03-14T09:43:09.473+0000] {standard_task_runner.py:91} INFO - Job 220: Subtask collect_and_save_match_data_to_json_to_s3
+[2025-03-14T09:43:09.569+0000] {task_command.py:426} INFO - Running <TaskInstance: collect_match_info_dag.collect_and_save_match_data_to_json_to_s3 manual__2025-03-14T09:43:05.533886+00:00 [running]> on host a0d797a25898
+[2025-03-14T09:43:09.788+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='collect_match_info_dag' AIRFLOW_CTX_TASK_ID='collect_and_save_match_data_to_json_to_s3' AIRFLOW_CTX_EXECUTION_DATE='2025-03-14T09:43:05.533886+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-03-14T09:43:05.533886+00:00'
+[2025-03-14T09:43:09.790+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-14T09:43:09.814+0000] {collect_match_info_dag.py:147} INFO - Collecting 2025-03-14's data
+[2025-03-14T09:43:10.501+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=%EC%AF%94%EC%95%95%EC%AF%94%EC%95%95
+[2025-03-14T09:43:10.931+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=BFXSeoby
+[2025-03-14T09:43:11.306+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=DRXSavior
+[2025-03-14T09:43:11.684+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=Innate%EB%85%B9%EC%8A%A4
+[2025-03-14T09:43:12.074+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=AF%EB%B0%95%EC%A4%80%ED%9A%A8
+[2025-03-14T09:43:12.476+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=NSRimGC
+[2025-03-14T09:43:12.848+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=SainT%EB%B0%95%EC%A7%80%ED%98%B8
+[2025-03-14T09:43:13.264+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=Edith%EC%9D%B4%EA%B5%AC%EC%B9%98%EB%A6%AC
+[2025-03-14T09:43:13.661+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=SainT%EC%84%B1%EC%A7%80%EC%9B%90
+[2025-03-14T09:43:14.043+0000] {collect_match_info_dag.py:82} WARNING - API 호출 실패 - status=400, url=https://open.api.nexon.com/fconline/v1/id?nickname=UnLMTD%EC%98%81%ED%99%98
+[2025-03-14T09:43:14.349+0000] {python.py:237} INFO - Done. Returned value was: None
+[2025-03-14T09:43:14.350+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-14T09:43:14.394+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=collect_match_info_dag, task_id=collect_and_save_match_data_to_json_to_s3, run_id=manual__2025-03-14T09:43:05.533886+00:00, execution_date=20250314T094305, start_date=20250314T094309, end_date=20250314T094314
+[2025-03-14T09:43:14.452+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2025-03-14T09:43:14.483+0000] {taskinstance.py:3498} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-03-14T09:43:14.485+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

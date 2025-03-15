@@ -1,0 +1,24 @@
+[2025-03-08T07:46:40.266+0000] {task_command.py:426} INFO - Running <TaskInstance: parquet_to_redshift.s3_to_redshift_match_data manual__2025-03-05T00:00:00+00:00 [success]> on host be828dc9717c
+[2025-03-08T07:46:40.349+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.9/site-packages/***/utils/context.py:212 AirflowContextDeprecationWarning: Accessing 'execution_date' from the template is deprecated and will be removed in a future version. Please use 'data_interval_start' or 'logical_date' instead.
+[2025-03-08T07:46:40.458+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='parquet_to_redshift' AIRFLOW_CTX_TASK_ID='s3_to_redshift_match_data' AIRFLOW_CTX_EXECUTION_DATE='2025-03-05T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-03-05T00:00:00+00:00'
+[2025-03-08T07:46:40.461+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-03-08T07:46:40.513+0000] {base.py:84} INFO - Using connection ID 's3_conn_team' for task execution.
+[2025-03-08T07:46:40.533+0000] {base.py:84} INFO - Using connection ID 's3_conn_team' for task execution.
+[2025-03-08T07:46:40.534+0000] {connection_wrapper.py:384} INFO - AWS Connection (conn_id='s3_conn_team', conn_type='aws') credentials retrieved from login and password.
+[2025-03-08T07:46:40.555+0000] {s3_to_redshift.py:193} INFO - Executing COPY command...
+[2025-03-08T07:46:40.576+0000] {base.py:84} INFO - Using connection ID 'redshift_conn_team' for task execution.
+[2025-03-08T07:46:41.322+0000] {sql.py:470} INFO - Running statement: BEGIN;, parameters: None
+[2025-03-08T07:46:41.330+0000] {sql.py:470} INFO - Running statement: DELETE FROM analytics.match_info;, parameters: None
+[2025-03-08T07:46:41.376+0000] {sql.py:479} INFO - Rows affected: 16758
+[2025-03-08T07:46:41.376+0000] {sql.py:470} INFO - Running statement: 
+                    COPY analytics.match_info 
+                    FROM 's3://de5-finalproj-team2/analytics/match_data/2025-03-05/'
+                    credentials
+                    'aws_access_key_id=AKIA4RRVVY55RK5T7HCV;aws_secret_access_key=***'
+                    
+                    FORMAT AS PARQUET;
+        , parameters: None
+[2025-03-08T07:46:41.821+0000] {sql.py:470} INFO - Running statement: COMMIT, parameters: None
+[2025-03-08T07:46:41.914+0000] {s3_to_redshift.py:198} INFO - COPY command complete...
+[2025-03-08T07:46:41.915+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-03-08T07:46:41.933+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=parquet_to_redshift, task_id=s3_to_redshift_match_data, run_id=manual__2025-03-05T00:00:00+00:00, execution_date=20250305T000000, start_date=20250308T074640, end_date=20250308T074641
