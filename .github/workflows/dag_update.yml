@@ -6,7 +6,7 @@ on:
       - main
       - develop
     paths:
-      - 'dags/**' # DAG안 파일 수정 시 실행
+      - '/home/ubuntu/airflow-setup/local-executor-airflow/dags/**' # DAG안 파일 수정 시 실행
 
 jobs:
   update_dags:
