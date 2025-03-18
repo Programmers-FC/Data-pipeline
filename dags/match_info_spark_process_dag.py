@@ -13,7 +13,6 @@ DEFAULT_ARGS = {
     "depends_on_past":True
 }
 
-#schedule_interval="55 2 * * *",
 dag = DAG(
     dag_id="match_info_spark_processing_dag",
     default_args=DEFAULT_ARGS,
@@ -25,6 +24,7 @@ dag = DAG(
 
 process_match_info = DummyOperator(task_id="process_match_info_task")
 
+#Spark 서버에 있는 Spark script 위치
 SPARK_SCRIPT_PATH = "/home/ubuntu/spark_scripts/match_info_pyspark.py"
 
 ssh_spark_submit = SSHOperator(
@@ -74,4 +74,3 @@ trigger_redshift_dag = TriggerDagRunOperator(
 
 
 process_match_info >> ssh_spark_submit >> trigger_redshift_dag
-#process_match_info >> hello_task >> trigger_redshift_dag

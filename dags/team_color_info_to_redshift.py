@@ -21,8 +21,7 @@ dag = DAG(
     "daily_team_color_info_update",
     default_args=default_args,
     description="매일 Redshift team_color_info 테이블을 최신 데이터로 업데이트",
-    schedule_interval= None,    #"45 3 * * *",  # 매일 12:35(KTC) 실행
-    catchup=False,
+    schedule_interval= None,
 )
 
 # ✅ 시작 태스크 (DummyOperator)

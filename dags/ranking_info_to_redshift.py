@@ -5,9 +5,6 @@ from airflow.models import Variable
 from datetime import datetime, timedelta
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
-# ✅ Airflow Variable에서 IAM_ROLE 가져오기
-IAM_ROLE = Variable.get("IAM_ROLE")
-
 # ✅ S3 & Redshift 설정
 S3_BUCKET = "de5-finalproj-team2"
 REDSHIFT_TABLE = "analytics.ranking_info"

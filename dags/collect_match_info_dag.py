@@ -34,8 +34,7 @@ default_dag = DAG(
 )
 
 # Nexon API 설정
-API_KEYS = Variable.get('api_4_account_key_mix_1', deserialize_json=True)
-# API_KEYS = API_KEYS[-1] ############################################## For testing only
+API_KEYS = Variable.get('api_4_account_key_mix_2', deserialize_json=True)
 API_LIMIT = 1000
 api_usage = {key: 0 for key in API_KEYS}
 current_key_idx = 0
@@ -58,6 +57,19 @@ def switch_to_next_key():
     
 
 def call_api_with_retry(idx,url):
+    """
+    API 키 사용량을 저장하고 1,000건 이상일시 다음 API 키 사용.
+    429 오류 발생시 0.5초 대기, 그외 오류는 0.3초 대기
+    아무런 오류 없을때는 초당 2.5건 데이터 수집
+
+    input:
+    - idx: i번쨰 유저
+    - url: API end point
+
+    output:
+     - 아무런 오류 없으면 response 반환
+     - 400 오류나 5회 시도 이후 데이터 추출 실패시 None 반환   
+    """
     global api_usage
 
     for attempt in range(5):
@@ -75,7 +87,7 @@ def call_api_with_retry(idx,url):
         elif response.status_code == 429:
             log.warning(f"429 발생 - {attempt+1}/5회 시도 중... 키 교체")
             switch_to_next_key()
-            time.sleep(0.5)  # 넉넉하게 1초 대기 후 재시도
+            time.sleep(0.5)  # 넉넉하게 0.5초 대기 후 재시도
             continue
 
         else:
@@ -89,10 +101,33 @@ def call_api_with_retry(idx,url):
 
 
 def fetch_ouid(idx,nickname):
+    """
+    유저 고유 ID 조회하는 API
+    
+    input:
+    - idx: i번쨰 유저
+    - nickname: 유저 닉네임
+
+    output:
+     - 아무런 오류 없으면 고유 ID (OUID) 변환
+     - 오류 발생 시 None 
+    """
     url = f"https://open.api.nexon.com/fconline/v1/id?nickname={quote(nickname)}"
     return call_api_with_retry(idx,url)
 
 def fetch_recent_match(idx,ouid):
+    """
+    위에서 가지고 온 고유 ID를 기반으로 최근 매치 ID 1개를 API를 통해 가지고 옴.
+    만약 없으면 None을 리턴하고 있으면 call_api_with_retry 함수를 통해 데이터 수집
+
+    input:
+    - idx: i번쨰 유저
+    - oudi: 유저 고유ID
+
+    output:
+     - 아무런 오류 없으면 Match ID 변환
+     - 오류 발생 시 None  
+    """
     url = f"https://open.api.nexon.com/fconline/v1/user/match?ouid={ouid}&matchtype=50&offset=0&limit=1"
     match_list = call_api_with_retry(idx,url)
     if not match_list:
@@ -102,6 +137,19 @@ def fetch_recent_match(idx,ouid):
     return match_list[0]
 
 def fetch_match_details(idx,match_id, ouid):
+    """
+    match_id를 기능로 메치 상세 정보를 API를 통해 가지고 오는 함수.
+    모든 플레이어의 정보가 아닌 조회하고자 하는 플레이어의 데이터만 수집.
+
+    input:
+    - idx: i번쨰 유저
+    - match_id: 매치 ID
+    - ouid: 고유ID
+
+    output:
+     - JSON으로 된 매치 세부 정보
+
+    """
     url = f"https://open.api.nexon.com/fconline/v1/match-detail?matchid={match_id}"
     match_data = call_api_with_retry(idx,url)
 
@@ -124,6 +172,18 @@ def fetch_match_details(idx,match_id, ouid):
     }
 
 def process_user(idx,nickname, ouid_missing, no_recent_match):
+    """
+    위 API를 통해 가지고 오는 데이터를 1개의 Dictionary로 뭉처주는 함수
+
+    input:
+    - idx: i번쨰 유저
+    - nickname: 유저 닉네임
+    - ouid_missing: 고유ID 조회가 되지 않는 유저
+    - no_recent_match: 최근 매치가 조회가 되지 않는 유저
+
+    output:
+     - JSON으로 된 유저명, ouid가 포함된 매치 세부 정보
+    """
     ouid_data = fetch_ouid(idx,nickname)
     if not ouid_data or "ouid" not in ouid_data:
         ouid_missing.append(nickname)
@@ -143,7 +203,13 @@ def process_user(idx,nickname, ouid_missing, no_recent_match):
     return {"nickname": nickname, "ouid": ouid, **match_details}
 
 def process_data(execution_date,execution_date_nodash):
-
+    """
+    S3에 저장된 플레이어 1,000명의 닉내임을 추출 후 API를 통해 데이터 수집 및 결과 S3에 저장
+    
+    input:
+    - execution_date: Dag 실행일 (YYYY-MM-DD)
+    - execution_date_nodash: Dag 실행일 (YYYYMMDD)
+    """
     log.info(f"Collecting {execution_date}'s data")
 
     # S3 설정
@@ -155,7 +221,7 @@ def process_data(execution_date,execution_date_nodash):
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
     obj = s3.get_object(Bucket=S3_BUCKET, Key=S3_KEY_CRAWL_PREFIX)
     df = pd.read_csv(obj['Body'])
-    nickname_list = df['감독명'].tolist()[:1000] ######################Testing only. change to 1000 when finished testing.
+    nickname_list = df['감독명'].tolist()[:1000] 
 
     results, ouid_missing, no_recent_match = [], [], []
 
@@ -182,6 +248,7 @@ collect_data_task = PythonOperator(
     dag=default_dag,
 )
 
+# 매치 정보를 처리하는 Dag를 트리거
 trigger_spark_dag = TriggerDagRunOperator(
     task_id="trigger_spark_match_info_task",
     trigger_dag_id="match_info_spark_processing_dag",

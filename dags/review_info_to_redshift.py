@@ -22,7 +22,7 @@ dag = DAG(
     "daily_review_data_update",
     default_args=default_args,
     description="매일 review_data_ML 데이터를 Redshift에 적재",
-    schedule_interval=None, #"50 3 * * *",  # ✅ 매일 12:50(KTC) 실행
+    schedule_interval=None, 
     catchup=False,
 )
 

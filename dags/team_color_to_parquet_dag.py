@@ -16,7 +16,7 @@ default_args = {
 dag = DAG(
     "team_color_to_parquet_dag",
     default_args=default_args,
-    schedule_interval = None,  #기존 : "40 1 * * *",
+    schedule_interval = None, 
     catchup=False
 )
 
